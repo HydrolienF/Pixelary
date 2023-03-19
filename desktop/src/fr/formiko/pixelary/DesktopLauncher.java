@@ -9,7 +9,8 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("Pixelary");
-		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+		// config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+		config.setMaximized(true);
 		new Lwjgl3Application(new Pixelary(), config);
 	}
 }
