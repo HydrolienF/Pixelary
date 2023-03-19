@@ -257,4 +257,11 @@ public class Shapes {
         return in.getTextureData().consumePixmap();
     }
 
+    public static Pixmap createWhitePixmap(int width, int height) {
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        return pixmap;
+    }
+
 }

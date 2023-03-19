@@ -17,9 +17,6 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Pixelary extends ApplicationAdapter {
 	private SpriteBatch batch;
-	private Pixmap modelPixmap;
-	private Pixmap userPixmap;
-	private Pixmap aiPixmap;
 	private List<PixmapActor> pixmapActors;
 	public static ShapeDrawer shapeDrawer;
 	private Stage stage;
@@ -47,18 +44,11 @@ public class Pixelary extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		ScreenUtils.clear(1, 1, 1, 1);
+		ScreenUtils.clear(0.9f, 0.9f, 0.9f, 1);
 		batch.begin();
 		shapeDrawer.setColor(Color.BLACK);
 		shapeDrawer.line(w / 3, 0, w / 3, h);
 		shapeDrawer.line(w * 2 / 3, 0, w * 2 / 3, h);
-
-		// float space = 0.8f;
-		// int pixelSize = (int) Math.min(w * space / (3 * modelPixmap.getWidth()), h * space / modelPixmap.getHeight());
-		// int freeSpace = (int) (w - 3 * pixelSize * modelPixmap.getWidth());
-		// drawPixmap(aiPixmap, freeSpace, 0, w / 3, h, pixelSize);
-		// drawPixmap(modelPixmap, w / 3, 0, w / 3, h, pixelSize);
-		// drawPixmap(userPixmap, w * 2 / 3, 0, w / 3, h, pixelSize);
 
 		stage.act();
 		stage.draw();
@@ -69,25 +59,13 @@ public class Pixelary extends ApplicationAdapter {
 	@Override
 	public void dispose() { batch.dispose(); }
 
-	// public void drawPixmap(Pixmap pixmap, int x, int y, int w, int h, int pixelSize) {
-	// if (pixmap == null)
-	// return;
-	// for (int i = 0; i < pixmap.getWidth(); i++) {
-	// for (int j = 0; j < pixmap.getHeight(); j++) {
-	// int color = pixmap.getPixel(i, j);
-	// shapeDrawer.setColor(new Color(color));
-	// shapeDrawer.filledRectangle(x + i * pixelSize, y + h - j * pixelSize, pixelSize, pixelSize);
-	// shapeDrawer.setColor(Color.BLACK);
-	// shapeDrawer.rectangle(x + i * pixelSize, y + h - j * pixelSize, pixelSize, pixelSize);
-	// }
-	// }
-	// }
-
 	public void startNewLevel(int levelId) {
 		Texture t = new Texture(Gdx.files.internal("images/levels/" + levelId + ".png"));
-		modelPixmap = Shapes.textureToPixmap(t);
-		userPixmap = new Pixmap(t.getWidth(), t.getHeight(), Format.RGBA8888);
-		aiPixmap = new Pixmap(t.getWidth(), t.getHeight(), Format.RGBA8888);
+		Pixmap tmp = Shapes.textureToPixmap(t);
+		Pixmap modelPixmap = Shapes.createWhitePixmap(tmp.getWidth(), tmp.getHeight());
+		modelPixmap.drawPixmap(tmp, 0, 0);
+		Pixmap userPixmap = Shapes.createWhitePixmap(tmp.getWidth(), tmp.getHeight());
+		Pixmap aiPixmap = Shapes.createWhitePixmap(tmp.getWidth(), tmp.getHeight());
 
 		pixmapActors = List.of(new PixmapActor(aiPixmap), new PixmapActor(modelPixmap), new PixmapActor(userPixmap));
 
@@ -96,7 +74,11 @@ public class Pixelary extends ApplicationAdapter {
 
 		int k = 0;
 		for (PixmapActor pixmapActor : pixmapActors) {
-			pixmapActor.setBounds(k * w / 3, 0, w / 3, h);
+			float margin = 0.1f;
+			int marginPixel = (int) (w * margin / 3);
+			pixmapActor.setSize((w / 3) - 2 * marginPixel, h - 2 * marginPixel);
+			pixmapActor.setX((w / 3 * k) + marginPixel);
+			pixmapActor.setY(h - marginPixel - pixmapActor.getHeight());
 			k++;
 			stage.addActor(pixmapActor);
 		}
