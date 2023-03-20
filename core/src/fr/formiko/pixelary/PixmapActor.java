@@ -34,7 +34,7 @@ public class PixmapActor extends Actor {
     public void setSize(float width, float height) {
         super.setSize(width, height);
         super.setSize((int) (getPixelSize() * pixmap.getWidth()), (int) (getPixelSize() * pixmap.getHeight()));
-        System.out.println("setSize " + width + " " + height + " " + getWidth() + " " + getHeight());
+        // System.out.println("setSize " + width + " " + height + " " + getWidth() + " " + getHeight());
     }
     public float getPixelSize() { return Math.min(getWidth() / pixmap.getWidth(), getHeight() / pixmap.getHeight()); }
 

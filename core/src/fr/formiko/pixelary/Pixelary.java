@@ -8,6 +8,7 @@ import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -16,12 +17,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.tommyettinger.textra.TypingLabel;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 
@@ -29,20 +33,24 @@ public class Pixelary extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private List<PixmapActor> pixmapActors;
 	private List<PixmapActor> paletteActors;
+	private List<Label> labels;
 	public static ShapeDrawer shapeDrawer;
 	private Stage stage;
 	private int w;
 	private int h;
+	private Camera camera;
 	private Viewport viewport;
 	private InputMultiplexer inputMultiplexer;
 	private Label.LabelStyle labelStyle;
+	private int fontSize = 55;
+	private Color clearColor;
+	private int currentLevel;
 
 	@Override
 	public void create() {
-		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
+		camera = new OrthographicCamera();
+		viewport = new ScreenViewport(camera);
 		batch = new SpriteBatch();
-		w = Gdx.graphics.getWidth();
-		h = Gdx.graphics.getHeight();
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		stage = new Stage(viewport, batch);
@@ -59,21 +67,22 @@ public class Pixelary extends ApplicationAdapter {
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
 
-		startNewLevel(3);
-
-
+		startNewLevel(1);
 	}
 
 	@Override
 	public void render() {
-		ScreenUtils.clear(0.9f, 0.9f, 0.9f, 1);
+		ScreenUtils.clear(clearColor);
 		batch.begin();
-		shapeDrawer.setColor(Color.BLACK);
-		shapeDrawer.line(w / 3, 0, w / 3, h);
-		shapeDrawer.line(w * 2 / 3, 0, w * 2 / 3, h);
+		if (pixmapActors != null) {
+			shapeDrawer.setColor(Color.BLACK);
+			shapeDrawer.line(w / 3, 0, w / 3, h);
+			shapeDrawer.line(w * 2 / 3, 0, w * 2 / 3, h);
+		}
 		batch.end();
 		stage.act();
 		stage.draw();
+		updatePercent();
 	}
 
 	@Override
@@ -81,9 +90,27 @@ public class Pixelary extends ApplicationAdapter {
 		batch.dispose();
 		stage.dispose();
 	}
+	public void disposeLevel() {
+		pixmapActors = null;
+		paletteActors = null;
+		labels = null;
+	}
 
 	public void startNewLevel(int levelId) {
+		currentLevel = levelId;
 		stage.clear();
+
+		switch (levelId) {
+		case 1:
+			clearColor = new Color(0.9f, 0.9f, 0.9f, 1);
+			break;
+		case 2:
+			clearColor = new Color(0.75f, 0.7f, 0.7f, 1);
+			break;
+		case 3:
+			clearColor = new Color(0.6f, 0f, 0f, 1);
+			break;
+		}
 
 		createPixmapActors(levelId);
 
@@ -94,6 +121,53 @@ public class Pixelary extends ApplicationAdapter {
 		Player.AI.setColor(Color.WHITE);
 		Player.HUMAN.setColor(Color.WHITE);
 		// stage.setDebugAll(true);
+
+		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		System.out.println("resize to " + width + "x" + height);
+		viewport.update(width, height, true);
+		w = width;
+		h = height;
+		float margin = 0.1f;
+		int marginPixel = (int) (w * margin / 3);
+
+		int k = 0;
+		// label
+		int j = 0;
+		for (Label label : labels) {
+			label.setSize(w / 3, fontSize);
+			label.setX(w * k / 3);
+			if (j == 0) {
+				label.setY(h - label.getHeight());
+				j++;
+			} else {
+				label.setY(h - label.getHeight() * 2);
+				k++;
+				j = 0;
+			}
+		}
+
+		// pixmaps
+		k = 0;
+		for (PixmapActor pixmapActor : pixmapActors) {
+			pixmapActor.setSize((w / 3) - 2 * marginPixel, h - labels.get(0).getHeight() - marginPixel);
+			pixmapActor.setCenterX((w / 3 * k + w / 6));
+			pixmapActor.setY(h - (2 * marginPixel) - pixmapActor.getHeight());
+			k++;
+		}
+
+		// palettes
+		k = 0;
+		float pixelSize = pixmapActors.get(0).getPixelSize();
+		for (PixmapActor pixmapActor : paletteActors) {
+			pixmapActor.setSize(pixelSize * pixmapActor.getPixmap().getWidth(), pixelSize * pixmapActor.getPixmap().getHeight());
+			pixmapActor.setCenterX((w / 3 * k + w / 6));
+			pixmapActor.setCenterY(marginPixel / 2);
+			k += 2;
+		}
 	}
 
 	/** Create the 3 drawing pixmap. */
@@ -110,14 +184,7 @@ public class Pixelary extends ApplicationAdapter {
 		pixmapActors.add(new PixmapActor(modelPixmap));
 		pixmapActors.add(new PixmapActor(userPixmap));
 
-		int k = 0;
 		for (PixmapActor pixmapActor : pixmapActors) {
-			float margin = 0.1f;
-			int marginPixel = (int) (w * margin / 3);
-			pixmapActor.setSize((w / 3) - 2 * marginPixel, h - 2 * marginPixel);
-			pixmapActor.setX((w / 3 * k) + marginPixel);
-			pixmapActor.setY(h - (2 * marginPixel) - pixmapActor.getHeight());
-			k++;
 			stage.addActor(pixmapActor);
 		}
 	}
@@ -143,19 +210,12 @@ public class Pixelary extends ApplicationAdapter {
 		paletteActors.add(new PixmapActor(paletteAI, true));
 		paletteActors.add(new PixmapActor(paletteHuman, true));
 
-		k = 0;
-		float pixelSize = pixmapActors.get(0).getPixelSize();
 		for (PixmapActor pixmapActor : paletteActors) {
-			float margin = 0.1f;
-			int marginPixel = (int) (w * margin / 3);
-			pixmapActor.setSize(pixelSize * pixmapActor.getPixmap().getWidth(), pixelSize * pixmapActor.getPixmap().getHeight());
-			pixmapActor.setCenterX((w / 3 * k + w / 6));
-			pixmapActor.setY(marginPixel);
-			k += 2;
 			stage.addActor(pixmapActor);
 		}
 	}
 	public void createLabels(int levelId) {
+		labels = new ArrayList<Label>();
 		List<String> labelNames = new ArrayList<String>();
 		String levelDraw;
 		String adjectif = "";
@@ -176,20 +236,80 @@ public class Pixelary extends ApplicationAdapter {
 			break;
 		}
 		labelNames.add(adjectif + "AI");
-		labelNames.add("Level " + levelId + "\n" + levelDraw);
+		labelNames.add("");
+		labelNames.add("Level " + levelId);
+		labelNames.add(levelDraw);
 		labelNames.add("You");
+		labelNames.add("");
 
 		int k = 0;
 		for (String labelName : labelNames) {
-			float margin = 0.1f;
-			int marginPixel = (int) (w * margin / 3);
 			Label label = new Label(labelName, labelStyle);
 			label.setAlignment(Align.center);
-			label.setSize(w / 3, marginPixel * 2);
-			label.setX(w * k / 3);
-			label.setY(h - (marginPixel * 2));
-			k++;
+			labels.add(label);
 			stage.addActor(label);
+			k++;
 		}
+	}
+
+	public double diff(Pixmap pixmap1, Pixmap pixmap2) {
+		int diff = 0;
+		for (int i = 0; i < pixmap1.getWidth(); i++) {
+			for (int j = 0; j < pixmap1.getHeight(); j++) {
+				if (pixmap1.getPixel(i, j) != pixmap2.getPixel(i, j)) {
+					diff++;
+				}
+			}
+		}
+		return (double) (diff) / (pixmap1.getWidth() * pixmap1.getHeight());
+	}
+
+	public void updatePercent() {
+		if (pixmapActors == null) {
+			return;
+		}
+		double scoreAI = 1 - diff(pixmapActors.get(1).getPixmap(), pixmapActors.get(0).getPixmap());
+		double scorePlayer = 1 - diff(pixmapActors.get(1).getPixmap(), pixmapActors.get(2).getPixmap());
+		labels.get(1).setText((int) (100 * scoreAI) + "%");
+		labels.get(5).setText((int) (100 * scorePlayer) + "%");
+		if (scorePlayer == 1) {
+			endGame(true);
+		} else if (scoreAI == 1) {
+			endGame(false);
+		}
+	}
+	public void endGame(final boolean win) {
+		stage.clear();
+		disposeLevel();
+		String text;
+		if (win) {
+			text = "You Win!";
+			if (currentLevel == 3) {
+				text += "\n thanks for playing!";
+			} else {
+				text += "\n Click HERE to play next level";
+			}
+			// TODO play win music
+		} else {
+			text = "You Lose!\n Click HERE to retry";
+			// TODO play lose music
+		}
+		TypingLabel label = new TypingLabel(text, labelStyle);
+		label.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (win) {
+					startNewLevel(currentLevel + 1);
+				} else {
+					startNewLevel(currentLevel);
+				}
+			}
+		});
+
+		label.setAlignment(Align.center);
+		label.setSize(label.getPrefWidth(), fontSize * 2);
+		label.setY(h - 2 * fontSize);
+		label.setX(Gdx.graphics.getWidth() / 2 - label.getWidth() / 2);
+		stage.addActor(label);
 	}
 }

@@ -29,6 +29,8 @@ allprojects {
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
         shapedrawerVersion = '2.5.0'
+        textratypistVersion = '0.8.0'
+        regexodusVersion = '0.1.15'
         
     }
 
@@ -68,7 +70,8 @@ project(":html") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion:sources"
-        
+        implementation "com.github.tommyettinger:textratypist:$textratypistVersion:sources"
+        implementation "com.github.tommyettinger:regexodus:$regexodusVersion:sources"
     }
 }
 
@@ -79,6 +82,7 @@ project(":core") {
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
+        implementation "com.github.tommyettinger:textratypist:$textratypistVersion"
         
     }
 }

@@ -3,6 +3,8 @@
 <module rename-to="html">
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 	<inherits name="space.earlygrey.shapedrawer"/>
+	<inherits name="regexodus.regexodus" />
+	<inherits name="com.github.tommyettinger.textratypist" />
 
 	<inherits name='Pixelary' />
 	<entry-point class='fr.formiko.pixelary.client.HtmlLauncher' />
