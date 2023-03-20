@@ -18,6 +18,8 @@ public class PixmapActor extends Actor {
         addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) { click(false, (int) x, (int) y); }
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) { click(false, (int) x, (int) y); }
         });
     }
     public PixmapActor(Pixmap pixmap) { this(pixmap, false); }
