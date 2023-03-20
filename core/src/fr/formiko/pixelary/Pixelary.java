@@ -2,7 +2,9 @@ package fr.formiko.pixelary;
 
 import fr.formiko.pixelary.tools.Shapes;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -13,10 +15,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -78,6 +77,17 @@ public class Pixelary extends ApplicationAdapter {
 	public void startNewLevel(int levelId) {
 		stage.clear();
 
+		createPixmapActors(levelId);
+
+		createPalettes();
+
+
+		Player.AI.setColor(Color.WHITE);
+		Player.HUMAN.setColor(Color.WHITE);
+		// stage.setDebugAll(true);
+	}
+
+	private void createPixmapActors(int levelId) {
 		Texture t = new Texture(Gdx.files.internal("images/levels/" + levelId + ".png"));
 		Pixmap tmp = Shapes.textureToPixmap(t);
 		Pixmap modelPixmap = Shapes.createWhitePixmap(tmp.getWidth(), tmp.getHeight());
@@ -85,12 +95,10 @@ public class Pixelary extends ApplicationAdapter {
 		Pixmap userPixmap = Shapes.createWhitePixmap(tmp.getWidth(), tmp.getHeight());
 		Pixmap aiPixmap = Shapes.createWhitePixmap(tmp.getWidth(), tmp.getHeight());
 
-		// pixmapActors = List.of(new PixmapActor(aiPixmap), new PixmapActor(modelPixmap), new PixmapActor(userPixmap)); // html
-		// incompatible
 		pixmapActors = new ArrayList<PixmapActor>();
-		pixmapActors.add(PixmapActor.newPixmapActor(aiPixmap));
-		pixmapActors.add(PixmapActor.newPixmapActor(modelPixmap));
-		pixmapActors.add(PixmapActor.newPixmapActor(userPixmap));
+		pixmapActors.add(new PixmapActor(aiPixmap));
+		pixmapActors.add(new PixmapActor(modelPixmap));
+		pixmapActors.add(new PixmapActor(userPixmap));
 
 		int k = 0;
 		for (PixmapActor pixmapActor : pixmapActors) {
@@ -102,20 +110,38 @@ public class Pixelary extends ApplicationAdapter {
 			k++;
 			stage.addActor(pixmapActor);
 		}
+	}
 
+	private void createPalettes() {
+		Pixmap modelPixmap = pixmapActors.get(1).getPixmap();
 		paletteActors = new ArrayList<PixmapActor>();
-		// TODO create 2 palettes from colors of modelPixmap
+		Set<Integer> colors = new HashSet<Integer>();
+		for (int i = 0; i < modelPixmap.getWidth(); i++) {
+			for (int j = 0; j < modelPixmap.getHeight(); j++) {
+				colors.add(modelPixmap.getPixel(i, j));
+			}
+		}
+		Pixmap paletteHuman = Shapes.createWhitePixmap(colors.size(), 1);
+		Pixmap paletteAI = Shapes.createWhitePixmap(colors.size(), 1);
+		int k = 0;
+		for (Integer color : colors) {
+			paletteHuman.drawPixel(k, 0, color);
+			paletteAI.drawPixel(k, 0, color);
+			k++;
+		}
+		paletteActors.add(new PixmapActor(paletteAI, true));
+		paletteActors.add(new PixmapActor(paletteHuman, true));
 
-		Player.AI.setColor(Color.WHITE);
-		Player.HUMAN.setColor(Color.WHITE);
-		// stage.setDebugAll(true);
-
-		Image replayButton = new Image(new Texture(Gdx.files.internal("images/icons/basic/replay.png")));
-		replayButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) { System.out.println("replay"); }
-		});
-		replayButton.setSize(50, 50);
-		stage.addActor(replayButton);
+		k = 0;
+		float pixelSize = pixmapActors.get(0).getPixelSize();
+		for (PixmapActor pixmapActor : paletteActors) {
+			float margin = 0.1f;
+			int marginPixel = (int) (w * margin / 3);
+			pixmapActor.setSize(pixelSize * pixmapActor.getPixmap().getWidth(), pixelSize * pixmapActor.getPixmap().getHeight());
+			pixmapActor.setCenterX((w / 3 * k + w / 6));
+			pixmapActor.setY(marginPixel);
+			k += 2;
+			stage.addActor(pixmapActor);
+		}
 	}
 }

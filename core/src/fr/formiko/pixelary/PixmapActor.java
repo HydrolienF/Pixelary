@@ -15,20 +15,12 @@ public class PixmapActor extends Actor {
         super();
         this.pixmap = pixmap;
         this.pic = pic;
-    }
-
-    public static PixmapActor newPixmapActor(Pixmap pixmap, boolean pic) {
-        PixmapActor pixmapActor = new PixmapActor(pixmap, pic);
-        pixmapActor.addListener(new ClickListener() {
+        addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("PixmapActor clicked");
-                pixmapActor.click(false, (int) x, (int) y);
-            }
+            public void clicked(InputEvent event, float x, float y) { click(false, (int) x, (int) y); }
         });
-        return pixmapActor;
     }
-    public static PixmapActor newPixmapActor(Pixmap pixmap) { return newPixmapActor(pixmap, false); }
+    public PixmapActor(Pixmap pixmap) { this(pixmap, false); }
 
     public float getCenterX() { return getX() + getWidth() / 2; }
     public float getCenterY() { return getY() + getHeight() / 2; }
