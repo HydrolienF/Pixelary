@@ -31,6 +31,7 @@ allprojects {
         shapedrawerVersion = '2.5.0'
         textratypistVersion = '0.8.0'
         regexodusVersion = '0.1.15'
+        spineVersion = '4.1.0'
         
     }
 
@@ -83,6 +84,6 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
         implementation "com.github.tommyettinger:textratypist:$textratypistVersion"
-        
+        implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
     }
 }

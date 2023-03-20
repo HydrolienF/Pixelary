@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Player {
     private Color color;
+    private Pen pen;
 
     public static Player AI = new Player();
     public static Player HUMAN = new Player();
@@ -14,4 +15,9 @@ public class Player {
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color; }
     public void setColor(int color) { this.color = new Color(color); }
+    public Pen getPen() { return pen; }
+    public void setPen(Pen pen) {
+        this.pen = pen;
+        pen.player = this;
+    }
 }

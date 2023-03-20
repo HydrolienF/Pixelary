@@ -1,5 +1,6 @@
 package fr.formiko.pixelary;
 
+import fr.formiko.pixelary.tools.Assets;
 import fr.formiko.pixelary.tools.Shapes;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +26,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.esotericsoftware.spine.AnimationState;
+import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.SkeletonRenderer;
 import com.github.tommyettinger.textra.TypingLabel;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -45,12 +50,14 @@ public class Pixelary extends ApplicationAdapter {
 	private int fontSize = 55;
 	private Color clearColor;
 	private int currentLevel;
+	private Assets assets;
 
 	@Override
 	public void create() {
 		camera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
 		batch = new SpriteBatch();
+		assets = new Assets();
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		stage = new Stage(viewport, batch);
@@ -80,9 +87,12 @@ public class Pixelary extends ApplicationAdapter {
 			shapeDrawer.line(w * 2 / 3, 0, w * 2 / 3, h);
 		}
 		batch.end();
+
+		updatePercent();
+
 		stage.act();
 		stage.draw();
-		updatePercent();
+
 	}
 
 	@Override
@@ -117,6 +127,8 @@ public class Pixelary extends ApplicationAdapter {
 		createPalettes();
 
 		createLabels(levelId);
+
+		createPens();
 
 		Player.AI.setColor(Color.WHITE);
 		Player.HUMAN.setColor(Color.WHITE);
@@ -153,9 +165,9 @@ public class Pixelary extends ApplicationAdapter {
 		// pixmaps
 		k = 0;
 		for (PixmapActor pixmapActor : pixmapActors) {
-			pixmapActor.setSize((w / 3) - 2 * marginPixel, h - labels.get(0).getHeight() - marginPixel);
+			pixmapActor.setSize((w / 3) - 2 * marginPixel, h - (labels.get(0).getHeight() * 2 + marginPixel));
 			pixmapActor.setCenterX((w / 3 * k + w / 6));
-			pixmapActor.setY(h - (2 * marginPixel) - pixmapActor.getHeight());
+			pixmapActor.setY(h - (labels.get(0).getHeight() * 2) - pixmapActor.getHeight());
 			k++;
 		}
 
@@ -249,6 +261,33 @@ public class Pixelary extends ApplicationAdapter {
 			labels.add(label);
 			stage.addActor(label);
 			k++;
+		}
+	}
+
+	public void createPens() {
+		SkeletonRenderer skeletonRenderer = new SkeletonRenderer();
+		skeletonRenderer.setPremultipliedAlpha(true);
+		String textureName = "pen";
+
+		for (int i = 0; i < 2; i++) {
+			Skeleton skeleton = new Skeleton(assets.getSkeletonData(textureName));
+			AnimationStateData stateData = new AnimationStateData(assets.getSkeletonData(textureName));
+			AnimationState animationState = new AnimationState(stateData);
+
+			Pen skeletonActor = new Pen();
+			skeletonActor.setRenderer(skeletonRenderer);
+			skeletonActor.setSkeleton(skeleton);
+			skeletonActor.setAnimationState(animationState);
+
+			skeletonActor.setScale(0.2f, 0.2f);
+			skeletonActor.setRotation(135);
+
+			if (i == 0) {
+				Player.AI.setPen(skeletonActor);
+			} else {
+				Player.HUMAN.setPen(skeletonActor);
+			}
+			stage.addActor(skeletonActor);
 		}
 	}
 

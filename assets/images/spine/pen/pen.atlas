@@ -1,0 +1,13 @@
+pen.png
+size:308,603
+filter:MipMapLinearLinear,MipMapLinearLinear
+pma:true
+pen bakground
+bounds:2,2,100,599
+offsets:0,0,100,600
+pen color
+bounds:104,2,96,591
+offsets:2,2,100,600
+pen shadow
+bounds:206,2,96,562
+offsets:2,2,100,600

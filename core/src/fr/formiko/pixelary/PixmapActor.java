@@ -78,10 +78,10 @@ public class PixmapActor extends Actor {
         int j = (int) (getHeight() - y) / pixelSize;
 
         if (pic) {
-            System.out.println("Pic color on " + i + " " + j);
+            // System.out.println("Pic color on " + i + " " + j);
             player.setColor(pixmap.getPixel(i, j));
         } else {
-            System.out.println("Place color on " + i + " " + j);
+            // System.out.println("Place color on " + i + " " + j);
             pixmap.setColor(player.getColor());
             pixmap.fillRectangle(i, j, 1, 1);
         }
