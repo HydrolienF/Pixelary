@@ -59,7 +59,7 @@ public class Pixelary extends ApplicationAdapter {
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
 
-		startNewLevel(1);
+		startNewLevel(3);
 
 
 	}
@@ -157,8 +157,26 @@ public class Pixelary extends ApplicationAdapter {
 	}
 	public void createLabels(int levelId) {
 		List<String> labelNames = new ArrayList<String>();
-		labelNames.add("AI");
-		labelNames.add("Level " + levelId);
+		String levelDraw;
+		String adjectif = "";
+		switch (levelId) {
+		case 1:
+			levelDraw = "Heart";
+			break;
+		case 2:
+			levelDraw = "Gold";
+			adjectif = "Malicious ";
+			break;
+		case 3:
+			levelDraw = "Pineapple";
+			adjectif = "Devilish ";
+			break;
+		default:
+			levelDraw = "";
+			break;
+		}
+		labelNames.add(adjectif + "AI");
+		labelNames.add("Level " + levelId + "\n" + levelDraw);
 		labelNames.add("You");
 
 		int k = 0;
@@ -167,10 +185,9 @@ public class Pixelary extends ApplicationAdapter {
 			int marginPixel = (int) (w * margin / 3);
 			Label label = new Label(labelName, labelStyle);
 			label.setAlignment(Align.center);
-			label.setSize(w / 3, marginPixel);
-			// label.setCenterX((w / 3 * k + w / 6));
+			label.setSize(w / 3, marginPixel * 2);
 			label.setX(w * k / 3);
-			label.setY(h - marginPixel);
+			label.setY(h - (marginPixel * 2));
 			k++;
 			stage.addActor(label);
 		}

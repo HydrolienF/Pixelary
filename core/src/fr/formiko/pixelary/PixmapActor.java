@@ -51,6 +51,8 @@ public class PixmapActor extends Actor {
             for (int j = 0; j < pixmap.getHeight(); j++) {
                 int color = pixmap.getPixel(i, j);
                 Pixelary.shapeDrawer.setColor(new Color(color));
+                // Pixelary.shapeDrawer.setColor(NumberUtils.intToFloatColor(color));
+                // Pixelary.shapeDrawer.getPackedColor();
                 Pixelary.shapeDrawer.filledRectangle(getX() + i * pixelSize, getY() + h - (j + 1) * pixelSize, pixelSize, pixelSize);
                 Pixelary.shapeDrawer.setColor(Color.BLACK);
                 Pixelary.shapeDrawer.rectangle(getX() + i * pixelSize, getY() + h - (j + 1) * pixelSize, pixelSize, pixelSize);
