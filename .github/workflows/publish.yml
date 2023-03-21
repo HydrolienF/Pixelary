@@ -1,0 +1,112 @@
+name: publish release with gradle
+
+on:
+  pull_request:
+    branches: [master]
+    types: [closed]
+
+env:
+  JAVA_VERSION: '18'
+  JAVA_DISTRIBUTION: 'temurin'
+  JRE_VERSION: '18.0.7'
+  GITHUB_TOKEN: ${{ github.token }}
+  ARTIFACT_NAME: 'Pixelary'
+  USER_NAME: 'HydrolienF'
+  UUID: '1468751e-078f-4fab-80e4-aa15e9b364b4'
+
+jobs:
+  releaseJob:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: ${{ env.JAVA_DISTRIBUTION }}
+        java-version: ${{ env.JAVA_VERSION }}
+
+    - name: Version-Tool
+      uses: HydrolienF/Version-Tool@0.7.1
+      id: version
+
+
+    - name: update version.md
+      run: echo ${{ steps.version.outputs.version }} > version.md
+
+    - name: create release
+      run: |
+        mv version.md assets/
+        chmod 777 gradlew
+        ./gradlew desktop:dist -Pversion='${{ steps.version.outputs.version }}'
+        ls desktop/build/libs/
+        mv desktop/build/libs/*.jar ${{ env.ARTIFACT_NAME }}.jar
+        ls
+
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: true
+        release_name: ${{ steps.version.outputs.version }}
+        tag_name: ${{ steps.version.outputs.version }}
+        body_path: CHANGELOG.md
+    - name: upload .jar artifact
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.ARTIFACT_NAME}}.jar
+        asset_name: ${{ env.ARTIFACT_NAME}}.jar
+        asset_content_type: application/jar
+    - name: LauncherJar
+      uses: HydrolienF/LauncherJar@0.1.82
+      with:
+        project-name: ${{ env.ARTIFACT_NAME }}
+        user-name: ${{ env.USER_NAME }}
+        launcher-jar-version: 0.1.82
+        GITHUB_TOKEN: ${{ github.token }}
+        release-url: ${{ steps.create_release.outputs.upload_url }}
+        app-version: ${{ steps.version.outputs.version }}
+        launcher-extension: 'jar'
+
+  WindowsArtifact:
+    if: github.event.pull_request.merged == true
+    needs: releaseJob
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: LauncherJar
+      uses: HydrolienF/LauncherJar@0.1.82
+      with:
+        project-name: ${{ env.ARTIFACT_NAME }}
+        user-name: ${{ env.USER_NAME }}
+        launcher-jar-version: 0.1.82
+        GITHUB_TOKEN: ${{ github.token }}
+        release-url: ${{ needs.releaseJob.outputs.upload_url }}
+        app-version: ${{ needs.releaseJob.outputs.version }}
+        launcher-extension: 'exe'
+        uuid: ${{ env.UUID }}
+
+  LinuxArtifact:
+    if: github.event.pull_request.merged == true
+    needs: releaseJob
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: LauncherJar
+      uses: HydrolienF/LauncherJar@0.1.82
+      with:
+        project-name: ${{ env.ARTIFACT_NAME }}
+        user-name: ${{ env.USER_NAME }}
+        launcher-jar-version: 0.1.82
+        GITHUB_TOKEN: ${{ github.token }}
+        release-url: ${{ needs.releaseJob.outputs.upload_url }}
+        app-version: ${{ needs.releaseJob.outputs.version }}
+        launcher-extension: 'deb'
+        deb-maintainer-email: 'hydrolien.f@gmail.com'
+        uuid: ${{ env.UUID }}

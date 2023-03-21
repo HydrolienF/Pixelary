@@ -254,13 +254,11 @@ public class Pixelary extends ApplicationAdapter {
 		labelNames.add("You");
 		labelNames.add("");
 
-		int k = 0;
 		for (String labelName : labelNames) {
 			Label label = new Label(labelName, labelStyle);
 			label.setAlignment(Align.center);
 			labels.add(label);
 			stage.addActor(label);
-			k++;
 		}
 	}
 
