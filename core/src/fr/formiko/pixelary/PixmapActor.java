@@ -117,4 +117,23 @@ public class PixmapActor extends Actor {
         }
         return null;
     }
+    public Vector2 getFirstPixelWithColor(Color color) {
+        for (int j = 0; j < pixmap.getHeight(); j++) {
+            for (int i = 0; i < pixmap.getWidth(); i++) {
+                if (new Color(pixmap.getPixel(i, j)).equals(color)) {
+                    return new Vector2(i, j);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Vector2 toScreenCoord(Vector2 v) {
+        return new Vector2((v.x + 0.5f) * getPixelSize() + getX(), getHeight() - (v.y + 0.5f) * getPixelSize() + getY());
+    }
+    // public Vector2 toPixmapCoord(Vector2 v) {
+    // return new Vector2((v.x - getX()) / getPixelSize() - 0.5f, (v.y - getY()) / getPixelSize() - 0.5f);
+    // }
+
+    public boolean containsCoo(int x, int y) { return x >= getX() && x <= getX() + getWidth() && y >= getY() && y <= getY() + getHeight(); }
 }

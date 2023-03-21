@@ -38,7 +38,7 @@ public class Player {
             // Do the next move to do.
             if (isOverNextClickPosition()) {
                 // Pixelary.getAIPixmap().getStage().touchDown((int) nextClickPosition.x, (int) nextClickPosition.y, 0, 0);
-                Pixelary.getAIPixmap().clickFromScreenCoo(true, (int) nextClickPosition.x, (int) nextClickPosition.y);
+                Pixelary.clickFromScreenCoo(true, (int) nextClickPosition.x, (int) nextClickPosition.y);
                 nextClickPosition = null;
                 return;
             } else {
@@ -61,9 +61,14 @@ public class Player {
      * Do what it needs to change it's color to a color that still have pixel to color.
      */
     public void changeColor() {
-        // Vector2 palettePixelToClick = Pixelary.getModelPixmap().getFirstUncompleteColor(Pixelary.getAIPixmap().getPixmap());
-        // TODO click on palette instead of auto swap color.
-        color = Pixelary.getModelPixmap().getFirstUncompleteColor(Pixelary.getAIPixmap().getPixmap());
+        // color = Pixelary.getModelPixmap().getFirstUncompleteColor(Pixelary.getAIPixmap().getPixmap());
+        Vector2 pixelToPic = Pixelary.getAIPalette()
+                .getFirstPixelWithColor(Pixelary.getModelPixmap().getFirstUncompleteColor(Pixelary.getAIPixmap().getPixmap()));
+        if (pixelToPic == null) {
+            return;
+        }
+        nextClickPosition = Pixelary.getAIPalette().toScreenCoord(pixelToPic);
+        Pixelary.setSpot(nextClickPosition);
     }
     /**
      * Do what it needs to do to place the next pixel with this color.
@@ -75,15 +80,8 @@ public class Player {
         if (pixelToDraw == null) {
             return false;
         }
-        // nextClickPosition = Pixelary.getAIPixmap().getStage().screenToStageCoordinates(new Vector2(pixelToDraw.x, pixelToDraw.y));
-        // nextClickPosition = Pixelary.getAIPixmap().getStage()
-        // .screenToStageCoordinates(new Vector2(Pixelary.getAIPixmap().getX(), Pixelary.getAIPixmap().getY()));
-        // @formatter:off
-        nextClickPosition = new Vector2(Pixelary.getAIPixmap().getX() + (pixelToDraw.x+0.5f) * Pixelary.getPixelSize(),
-                Pixelary.getAIPixmap().getY() + Pixelary.getAIPixmap().getHeight() - (pixelToDraw.y+0.5f) * Pixelary.getPixelSize());
-        // @formatter:on
         System.out.println("pixelToDraw = " + pixelToDraw);
-        // System.out.println("nextClickPosition = " + nextClickPosition);
+        nextClickPosition = Pixelary.getAIPixmap().toScreenCoord(pixelToDraw);
         Pixelary.setSpot(nextClickPosition);
         return true;
     }

@@ -101,13 +101,13 @@ public class Pixelary extends ApplicationAdapter {
 		stage.act();
 		stage.draw();
 
-		// batch.begin();
-		// // show AI behavior
-		// if (aiTarget != null) {
-		// shapeDrawer.setColor(Color.BLUE);
-		// shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
-		// }
-		// batch.end();
+		batch.begin();
+		// show AI behavior
+		if (aiTarget != null) {
+			shapeDrawer.setColor(Color.BLUE);
+			shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
+		}
+		batch.end();
 
 	}
 
@@ -367,5 +367,26 @@ public class Pixelary extends ApplicationAdapter {
 		label.setY(h - 2 * fontSize);
 		label.setX(Gdx.graphics.getWidth() / 2 - label.getWidth() / 2);
 		stage.addActor(label);
+	}
+
+	/**
+	 * @summary click on overed actor.
+	 * @param isAI
+	 * @param x
+	 * @param y
+	 */
+	public static void clickFromScreenCoo(boolean isAI, int x, int y) {
+		for (PixmapActor actor : pixmapActors) {
+			if (actor.containsCoo(x, y)) {
+				actor.clickFromScreenCoo(isAI, x, y);
+				return;
+			}
+		}
+		for (PixmapActor actor : paletteActors) {
+			if (actor.containsCoo(x, y)) {
+				actor.clickFromScreenCoo(isAI, x, y);
+				return;
+			}
+		}
 	}
 }
