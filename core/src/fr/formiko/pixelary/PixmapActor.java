@@ -3,6 +3,7 @@ package fr.formiko.pixelary;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -66,6 +67,7 @@ public class PixmapActor extends Actor {
      * React to a click on screen by setting color or getting color from palette.
      */
     public void click(boolean isAI, int x, int y) {
+        System.out.println("Click on " + x + " " + y + " " + isAI);
         Player player;
         if (isAI) {
             player = Player.AI;
@@ -76,6 +78,7 @@ public class PixmapActor extends Actor {
         int pixelSize = (int) getPixelSize();
         int i = x / pixelSize;
         int j = (int) (getHeight() - y) / pixelSize;
+        System.out.println("Click match pixmap location " + i + " " + j);
 
         if (pic) {
             // System.out.println("Pic color on " + i + " " + j);
@@ -84,6 +87,34 @@ public class PixmapActor extends Actor {
             // System.out.println("Place color on " + i + " " + j);
             pixmap.setColor(player.getColor());
             pixmap.fillRectangle(i, j, 1, 1);
+            System.out.println("Color " + player.getColor() + " placed on " + i + " " + j);
         }
+    }
+    /**
+     * React to a click on screen by setting color or getting color from palette.
+     */
+    public void clickFromScreenCoo(boolean isAI, int x, int y) { click(isAI, x - (int) getX(), y - (int) getY()); }
+
+
+    public Vector2 getFirstPixelToCompleteWithColor(Color color, Pixmap playerPixmap) {
+        for (int j = 0; j < pixmap.getHeight(); j++) {
+            for (int i = 0; i < pixmap.getWidth(); i++) {
+                // Different color between the 2 pixmap & pen have the wanted color.
+                if (pixmap.getPixel(i, j) != playerPixmap.getPixel(i, j) && new Color(pixmap.getPixel(i, j)).equals(color)) {
+                    return new Vector2(i, j);
+                }
+            }
+        }
+        return null;
+    }
+    public Color getFirstUncompleteColor(Pixmap playerPixmap) {
+        for (int j = 0; j < pixmap.getHeight(); j++) {
+            for (int i = 0; i < pixmap.getWidth(); i++) {
+                if (pixmap.getPixel(i, j) != playerPixmap.getPixel(i, j)) {
+                    return new Color(pixmap.getPixel(i, j));
+                }
+            }
+        }
+        return null;
     }
 }

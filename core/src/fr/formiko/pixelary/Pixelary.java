@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -36,9 +37,9 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Pixelary extends ApplicationAdapter {
 	private SpriteBatch batch;
-	private List<PixmapActor> pixmapActors;
-	private List<PixmapActor> paletteActors;
-	private List<Label> labels;
+	private static List<PixmapActor> pixmapActors;
+	private static List<PixmapActor> paletteActors;
+	private static List<Label> labels;
 	public static ShapeDrawer shapeDrawer;
 	private Stage stage;
 	private int w;
@@ -51,6 +52,13 @@ public class Pixelary extends ApplicationAdapter {
 	private Color clearColor;
 	private int currentLevel;
 	private Assets assets;
+	private static Vector2 aiTarget;
+
+	public static PixmapActor getModelPixmap() { return pixmapActors.get(1); }
+	public static PixmapActor getAIPixmap() { return pixmapActors.get(0); }
+	public static PixmapActor getPlayerPixmap() { return pixmapActors.get(2); }
+	public static PixmapActor getAIPalette() { return paletteActors.get(0); }
+	public static float getPixelSize() { return getAIPixmap().getPixelSize(); }
 
 	@Override
 	public void create() {
@@ -93,7 +101,17 @@ public class Pixelary extends ApplicationAdapter {
 		stage.act();
 		stage.draw();
 
+		// batch.begin();
+		// // show AI behavior
+		// if (aiTarget != null) {
+		// shapeDrawer.setColor(Color.BLUE);
+		// shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
+		// }
+		// batch.end();
+
 	}
+
+	public static void setSpot(Vector2 v) { aiTarget = v; }
 
 	@Override
 	public void dispose() {
@@ -109,6 +127,7 @@ public class Pixelary extends ApplicationAdapter {
 	public void startNewLevel(int levelId) {
 		currentLevel = levelId;
 		stage.clear();
+		Player.AI.nextClickPosition = null;
 
 		switch (levelId) {
 		case 1:
@@ -173,7 +192,7 @@ public class Pixelary extends ApplicationAdapter {
 
 		// palettes
 		k = 0;
-		float pixelSize = pixmapActors.get(0).getPixelSize();
+		float pixelSize = getPixelSize();
 		for (PixmapActor pixmapActor : paletteActors) {
 			pixmapActor.setSize(pixelSize * pixmapActor.getPixmap().getWidth(), pixelSize * pixmapActor.getPixmap().getHeight());
 			pixmapActor.setCenterX((w / 3 * k + w / 6));
