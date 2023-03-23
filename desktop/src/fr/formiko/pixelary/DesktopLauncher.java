@@ -12,6 +12,11 @@ public class DesktopLauncher {
 		// config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		config.setMaximized(true);
 		// config.setResizable(false);
-		new Lwjgl3Application(new Pixelary(arg), config);
+		new Lwjgl3Application(new Pixelary(arg, new DesktopNative()), config);
 	}
+}
+
+class DesktopNative implements Native {
+	@Override
+	public void exit() { System.exit(0); }
 }

@@ -56,9 +56,13 @@ public class Pixelary extends ApplicationAdapter {
 	private Assets assets;
 	private static Vector2 aiTarget;
 	private String[] args;
+	private Native nativ;
 
-	public Pixelary(String[] args) { this.args = args; }
-	public Pixelary() { this(null); }
+	public Pixelary(String[] args, Native nativ) {
+		this.args = args;
+		this.nativ = nativ;
+	}
+	public Pixelary() { this(null, new NullNative()); }
 
 	public static PixmapActor getModelPixmap() { return pixmapActors.get(1); }
 	public static PixmapActor getAIPixmap() { return pixmapActors.get(0); }
@@ -418,7 +422,7 @@ public class Pixelary extends ApplicationAdapter {
 			case "v": {
 				FileHandle versionFile = Gdx.files.internal("version.md");
 				System.out.println(versionFile.readString());
-				Gdx.app.exit();
+				nativ.exit();
 				break;
 			}
 			default: {
