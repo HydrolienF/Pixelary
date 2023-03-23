@@ -90,7 +90,7 @@ public class Pixelary extends ApplicationAdapter {
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
 
-		startNewLevel(3);
+		startNewLevel(1);
 	}
 
 	@Override
@@ -347,6 +347,7 @@ public class Pixelary extends ApplicationAdapter {
 			skeletonActor.setRotation(135);
 
 			if (i == 0) {
+				skeleton.setSkin("bot");
 				Player.AI.setPen(skeletonActor);
 			} else {
 				Player.HUMAN.setPen(skeletonActor);

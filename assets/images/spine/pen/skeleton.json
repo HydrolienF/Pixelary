@@ -1,22 +1,33 @@
 {
 "skeleton": {
-	"hash": "LOqH7p4LSwk",
+	"hash": "2bGauv+gpWE",
 	"spine": "4.1.19",
-	"x": -50,
-	"y": -600,
-	"width": 100,
-	"height": 600,
+	"x": -3462.05,
+	"y": -3232.39,
+	"width": 4480.33,
+	"height": 4480.34,
 	"images": "../pen, piece by piece/",
 	"audio": ""
 },
 "bones": [
 	{ "name": "root" },
-	{ "name": "pen", "parent": "root", "y": -300 }
+	{ "name": "pen", "parent": "root", "y": -300 },
+	{
+		"name": "arm",
+		"parent": "root",
+		"rotation": 53.1,
+		"x": -1221.88,
+		"y": -992.22,
+		"scaleX": 2,
+		"scaleY": 2
+	}
 ],
 "slots": [
+	{ "name": "fingers", "bone": "arm", "attachment": "fingers" },
 	{ "name": "pen bakground", "bone": "pen", "attachment": "pen bakground" },
 	{ "name": "pen color", "bone": "pen", "attachment": "pen color" },
-	{ "name": "pen shadow", "bone": "pen", "attachment": "pen shadow" }
+	{ "name": "pen shadow", "bone": "pen", "attachment": "pen shadow" },
+	{ "name": "arm", "bone": "arm", "attachment": "arm" }
 ],
 "skins": [
 	{
@@ -30,6 +41,17 @@
 			},
 			"pen shadow": {
 				"pen shadow": { "width": 100, "height": 600 }
+			}
+		}
+	},
+	{
+		"name": "bot",
+		"attachments": {
+			"arm": {
+				"arm": { "width": 1600, "height": 1600 }
+			},
+			"fingers": {
+				"fingers": { "width": 1600, "height": 1600 }
 			}
 		}
 	}
