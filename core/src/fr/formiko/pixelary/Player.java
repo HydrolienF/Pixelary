@@ -1,5 +1,7 @@
 package fr.formiko.pixelary;
 
+import java.util.LinkedList;
+import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -13,9 +15,16 @@ public class Player {
     // public int id; // 0 is the player, 1 is the IA.
     public static float SPEED = 200;
     public Vector2 nextClickPosition;
+    public List<Action> actions;
 
-    public Player() { nextClickPosition = null; }
 
+    // Constructors ---------------------------------------------------------------------------------------------------
+    public Player() {
+        nextClickPosition = null;
+        actions = new LinkedList<Action>();
+    }
+
+    // get set --------------------------------------------------------------------------------------------------------
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color; }
     public void setColor(int color) { this.color = new Color(color); }
@@ -26,13 +35,23 @@ public class Player {
     }
     public float getSpeed(float delta) { return SPEED * delta * Gdx.graphics.getWidth() / 1920; }
 
+    // Functions ------------------------------------------------------------------------------------------------------
     // AI part
     public void moveAsAI(float delta) {
         if (nextClickPosition == null || nextClickPosition.x == -1f || nextClickPosition.y == -1f) {
             // Find the next move to do.
-            // Simple AI use every color to color every pixel then win.
-            if (!placeNextPixel()) {
-                changeColor();
+            if (actions.size() > 0 && actions.get(0).triggered()) { // annoy player
+                Action a = actions.get(0);
+                nextClickPosition = a.getClickPosition();
+                if (a.isOver()) {
+                    actions.remove(0);
+                }
+                // System.out.println("nextClickPosition to annoy player = " + nextClickPosition);
+            } else { // get a better score.
+                // Simple AI use every color to color every pixel then win.
+                if (!placeNextPixel()) {
+                    changeColor();
+                }
             }
         } else {
             // Do the next move to do.

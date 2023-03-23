@@ -1,5 +1,7 @@
 package fr.formiko.pixelary;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -144,4 +146,18 @@ public class PixmapActor extends Actor {
     // }
 
     public boolean containsCoo(int x, int y) { return x >= getX() && x <= getX() + getWidth() && y >= getY() && y <= getY() + getHeight(); }
+
+
+    public Vector2 getRandomPixelToDestroy(Color color, Pixmap playerPixmap) {
+        List<Vector2> pixels = new ArrayList<Vector2>();
+        for (int j = 0; j < pixmap.getHeight(); j++) {
+            for (int i = 0; i < pixmap.getWidth(); i++) {
+                // Different color between the 2 pixmap & pen have the wanted color.
+                if (pixmap.getPixel(i, j) == playerPixmap.getPixel(i, j) && !new Color(playerPixmap.getPixel(i, j)).equals(color)) {
+                    pixels.add(new Vector2(i, j));
+                }
+            }
+        }
+        return pixels.get(Pixelary.random.nextInt(pixels.size()));
+    }
 }
