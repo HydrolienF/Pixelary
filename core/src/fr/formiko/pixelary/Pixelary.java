@@ -1,6 +1,7 @@
 package fr.formiko.pixelary;
 
 import fr.formiko.pixelary.tools.Assets;
+import fr.formiko.pixelary.tools.Musics;
 import fr.formiko.pixelary.tools.Shapes;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -101,6 +102,7 @@ public class Pixelary extends ApplicationAdapter {
 		stage.act();
 		stage.draw();
 
+		// TODO to comment
 		batch.begin();
 		// show AI behavior
 		if (aiTarget != null) {
@@ -122,6 +124,7 @@ public class Pixelary extends ApplicationAdapter {
 		pixmapActors = null;
 		paletteActors = null;
 		labels = null;
+		Musics.stop();
 	}
 
 	public void startNewLevel(int levelId) {
@@ -154,6 +157,8 @@ public class Pixelary extends ApplicationAdapter {
 		// stage.setDebugAll(true);
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		Musics.playLevelMusic(levelId);
 	}
 
 	@Override

@@ -80,7 +80,7 @@ public class Player {
         if (pixelToDraw == null) {
             return false;
         }
-        System.out.println("pixelToDraw = " + pixelToDraw);
+        // System.out.println("pixelToDraw = " + pixelToDraw);
         nextClickPosition = Pixelary.getAIPixmap().toScreenCoord(pixelToDraw);
         Pixelary.setSpot(nextClickPosition);
         return true;

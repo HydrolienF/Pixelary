@@ -67,7 +67,7 @@ public class PixmapActor extends Actor {
      * React to a click on screen by setting color or getting color from palette.
      */
     public void click(boolean isAI, int x, int y) {
-        System.out.println("Click on " + x + " " + y + " " + isAI);
+        // System.out.println("Click on " + x + " " + y + " " + isAI);
         Player player;
         if (isAI) {
             player = Player.AI;
@@ -78,7 +78,7 @@ public class PixmapActor extends Actor {
         int pixelSize = (int) getPixelSize();
         int i = x / pixelSize;
         int j = (int) (getHeight() - y) / pixelSize;
-        System.out.println("Click match pixmap location " + i + " " + j);
+        // System.out.println("Click match pixmap location " + i + " " + j);
 
         if (pic) {
             // System.out.println("Pic color on " + i + " " + j);
@@ -87,7 +87,7 @@ public class PixmapActor extends Actor {
             // System.out.println("Place color on " + i + " " + j);
             pixmap.setColor(player.getColor());
             pixmap.fillRectangle(i, j, 1, 1);
-            System.out.println("Color " + player.getColor() + " placed on " + i + " " + j);
+            // System.out.println("Color " + player.getColor() + " placed on " + i + " " + j);
         }
     }
     /**
