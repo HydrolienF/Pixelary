@@ -91,6 +91,8 @@ project(":html") {
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion:sources"
         implementation "com.github.tommyettinger:textratypist:$textratypistVersion:sources"
         implementation "com.github.tommyettinger:regexodus:$regexodusVersion:sources"
+        // implementation "com.badlogicgames.gdx:gdx-box2d:$spineVersion:sources"
+        implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion:sources"
     }
 }
 
@@ -103,6 +105,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
         implementation "com.github.tommyettinger:textratypist:$textratypistVersion"
+        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
     }
 }

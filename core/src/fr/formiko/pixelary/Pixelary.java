@@ -10,6 +10,7 @@ import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -54,6 +55,10 @@ public class Pixelary extends ApplicationAdapter {
 	private int currentLevel;
 	private Assets assets;
 	private static Vector2 aiTarget;
+	private String[] args;
+
+	public Pixelary(String[] args) { this.args = args; }
+	public Pixelary() { this(null); }
 
 	public static PixmapActor getModelPixmap() { return pixmapActors.get(1); }
 	public static PixmapActor getAIPixmap() { return pixmapActors.get(0); }
@@ -63,6 +68,7 @@ public class Pixelary extends ApplicationAdapter {
 
 	@Override
 	public void create() {
+		setOptionsFromArgs();
 		camera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
 		batch = new SpriteBatch();
@@ -163,7 +169,7 @@ public class Pixelary extends ApplicationAdapter {
 
 	@Override
 	public void resize(int width, int height) {
-		System.out.println("resize to " + width + "x" + height);
+		Gdx.app.log("", "resize to " + width + "x" + height);
 		viewport.update(width, height, true);
 		w = width;
 		h = height;
@@ -391,6 +397,33 @@ public class Pixelary extends ApplicationAdapter {
 			if (actor.containsCoo(x, y)) {
 				actor.clickFromScreenCoo(isAI, x, y);
 				return;
+			}
+		}
+	}
+
+
+	/**
+	 * {@summary Update some option from command line args.}
+	 */
+	private void setOptionsFromArgs() {
+		if (args == null) {
+			return;
+		}
+		for (String arg : args) {
+			while (arg != null && arg.length() > 1 && arg.charAt(0) == '-') {
+				arg = arg.substring(1);
+			}
+			switch (arg) {
+			case "version":
+			case "v": {
+				FileHandle versionFile = Gdx.files.internal("version.md");
+				System.out.println(versionFile.readString());
+				Gdx.app.exit();
+				break;
+			}
+			default: {
+				Gdx.app.log("", arg + " don't match any args possible");
+			}
 			}
 		}
 	}
