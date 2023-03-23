@@ -10,7 +10,6 @@ import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -55,14 +54,8 @@ public class Pixelary extends ApplicationAdapter {
 	private int currentLevel;
 	private Assets assets;
 	private static Vector2 aiTarget;
-	private String[] args;
-	private Native nativ;
 
-	public Pixelary(String[] args, Native nativ) {
-		this.args = args;
-		this.nativ = nativ;
-	}
-	public Pixelary() { this(null, new NullNative()); }
+	public Pixelary() {}
 
 	public static PixmapActor getModelPixmap() { return pixmapActors.get(1); }
 	public static PixmapActor getAIPixmap() { return pixmapActors.get(0); }
@@ -72,7 +65,6 @@ public class Pixelary extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		setOptionsFromArgs();
 		camera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
 		batch = new SpriteBatch();
@@ -401,33 +393,6 @@ public class Pixelary extends ApplicationAdapter {
 			if (actor.containsCoo(x, y)) {
 				actor.clickFromScreenCoo(isAI, x, y);
 				return;
-			}
-		}
-	}
-
-
-	/**
-	 * {@summary Update some option from command line args.}
-	 */
-	private void setOptionsFromArgs() {
-		if (args == null) {
-			return;
-		}
-		for (String arg : args) {
-			while (arg != null && arg.length() > 1 && arg.charAt(0) == '-') {
-				arg = arg.substring(1);
-			}
-			switch (arg) {
-			case "version":
-			case "v": {
-				FileHandle versionFile = Gdx.files.internal("version.md");
-				System.out.println(versionFile.readString());
-				nativ.exit();
-				break;
-			}
-			default: {
-				Gdx.app.log("", arg + " don't match any args possible");
-			}
 			}
 		}
 	}
