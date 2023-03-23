@@ -1,13 +1,19 @@
 pen.png
-size:512,1024
+size:1950,1204
 filter:MipMapLinearLinear,MipMapLinearLinear
 pma:true
+arm
+bounds:2,2,485,462
+offsets:952,472,1600,1600
+fingers
+bounds:489,2,114,117
+offsets:1347,445,1600,1600
 pen bakground
-bounds:2,2,100,599
+bounds:976,2,100,599
 offsets:0,0,100,600
 pen color
-bounds:104,2,96,591
+bounds:1463,2,96,591
 offsets:2,2,100,600
 pen shadow
-bounds:206,2,96,562
+bounds:2,603,96,562
 offsets:2,2,100,600

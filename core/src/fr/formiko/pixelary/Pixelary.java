@@ -90,7 +90,7 @@ public class Pixelary extends ApplicationAdapter {
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
 
-		startNewLevel(3);
+		startNewLevel(1);
 	}
 
 	@Override
@@ -109,14 +109,14 @@ public class Pixelary extends ApplicationAdapter {
 		stage.act();
 		stage.draw();
 
-		// TODO to comment
-		batch.begin();
-		// show AI behavior
-		if (aiTarget != null) {
-			shapeDrawer.setColor(Color.BLUE);
-			shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
-		}
-		batch.end();
+		// // TODO to comment
+		// batch.begin();
+		// // show AI behavior
+		// if (aiTarget != null) {
+		// shapeDrawer.setColor(Color.BLUE);
+		// shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
+		// }
+		// batch.end();
 
 	}
 
@@ -347,6 +347,7 @@ public class Pixelary extends ApplicationAdapter {
 			skeletonActor.setRotation(135);
 
 			if (i == 0) {
+				skeleton.setSkin("bot");
 				Player.AI.setPen(skeletonActor);
 			} else {
 				Player.HUMAN.setPen(skeletonActor);
