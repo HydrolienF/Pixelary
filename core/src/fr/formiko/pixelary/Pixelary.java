@@ -6,6 +6,7 @@ import fr.formiko.pixelary.tools.Shapes;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -51,9 +52,13 @@ public class Pixelary extends ApplicationAdapter {
 	private Label.LabelStyle labelStyle;
 	private int fontSize = 55;
 	private Color clearColor;
-	private int currentLevel;
+	static int currentLevel;
 	private Assets assets;
 	private static Vector2 aiTarget;
+	public static double scoreAI;
+	public static double scorePlayer;
+	public static Random random = new Random();
+
 
 	public Pixelary() {}
 
@@ -85,7 +90,7 @@ public class Pixelary extends ApplicationAdapter {
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
 
-		startNewLevel(1);
+		startNewLevel(3);
 	}
 
 	@Override
@@ -133,15 +138,19 @@ public class Pixelary extends ApplicationAdapter {
 		currentLevel = levelId;
 		stage.clear();
 		Player.AI.nextClickPosition = null;
+		Player.AI.playOnModel = false;
 
 		switch (levelId) {
 		case 1:
+			Player.SPEED = 150;
 			clearColor = new Color(0.9f, 0.9f, 0.9f, 1);
 			break;
 		case 2:
+			Player.SPEED = 350;
 			clearColor = new Color(0.75f, 0.7f, 0.7f, 1);
 			break;
 		case 3:
+			Player.SPEED = 100;
 			clearColor = new Color(0.6f, 0f, 0f, 1);
 			break;
 		}
@@ -161,6 +170,27 @@ public class Pixelary extends ApplicationAdapter {
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		Musics.playLevelMusic(levelId);
+
+		switch (levelId) {
+		case 2:
+			Player.AI.actions.add(new Action(0.4f, Action.Type.ONE_PIXEL, 3, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.5f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.55f, Action.Type.ONE_LINE, 15, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.56f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.70f, Action.Type.ONE_LINE, 5, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.72f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.89f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.95f, Action.Type.ONE_PIXEL, 10, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.97f, Action.Type.ONE_LINE, 20, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.99f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
+			break;
+		case 3:
+			Player.AI.actions.add(new Action(0.4f, Action.Type.ONE_PIXEL, 10, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.45f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.47f, Action.Type.ONE_LINE, 15, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.89f, Action.Type.PLAY_ON_MODEL, 1, null));
+			break;
+		}
 	}
 
 	@Override
@@ -222,6 +252,14 @@ public class Pixelary extends ApplicationAdapter {
 		pixmapActors.add(new PixmapActor(modelPixmap));
 		pixmapActors.add(new PixmapActor(userPixmap));
 
+		if (levelId == 1) {
+			pixmapActors.get(0).setEditableByPlayer(false);
+			pixmapActors.get(1).setEditableByPlayer(false);
+		}
+		// if (levelId == 2) {
+		// pixmapActors.get(1).setEditableByPlayer(false);
+		// }
+
 		for (PixmapActor pixmapActor : pixmapActors) {
 			stage.addActor(pixmapActor);
 		}
@@ -241,6 +279,8 @@ public class Pixelary extends ApplicationAdapter {
 		Pixmap paletteAI = Shapes.createWhitePixmap(colors.size(), 1);
 		int k = 0;
 		for (Integer color : colors) {
+			Color color2 = new Color(color);
+			System.out.println("color " + color2.r * 255 + " " + color2.g * 255 + " " + color2.b * 255);
 			paletteHuman.drawPixel(k, 0, color);
 			paletteAI.drawPixel(k, 0, color);
 			k++;
@@ -331,8 +371,8 @@ public class Pixelary extends ApplicationAdapter {
 		if (pixmapActors == null) {
 			return;
 		}
-		double scoreAI = 1 - diff(pixmapActors.get(1).getPixmap(), pixmapActors.get(0).getPixmap());
-		double scorePlayer = 1 - diff(pixmapActors.get(1).getPixmap(), pixmapActors.get(2).getPixmap());
+		scoreAI = 1 - diff(pixmapActors.get(1).getPixmap(), pixmapActors.get(0).getPixmap());
+		scorePlayer = 1 - diff(pixmapActors.get(1).getPixmap(), pixmapActors.get(2).getPixmap());
 		labels.get(1).setText((int) (100 * scoreAI) + "%");
 		labels.get(5).setText((int) (100 * scorePlayer) + "%");
 		if (scorePlayer == 1) {

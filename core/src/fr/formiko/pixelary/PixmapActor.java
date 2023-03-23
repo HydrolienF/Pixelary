@@ -1,5 +1,7 @@
 package fr.formiko.pixelary;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class PixmapActor extends Actor {
     private final Pixmap pixmap;
     private final boolean pic;
+    private boolean editableByPlayer;
 
     public PixmapActor(Pixmap pixmap, boolean pic) {
         super();
@@ -22,6 +25,7 @@ public class PixmapActor extends Actor {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) { click(false, (int) x, (int) y); }
         });
+        editableByPlayer = true;
     }
     public PixmapActor(Pixmap pixmap) { this(pixmap, false); }
 
@@ -30,6 +34,9 @@ public class PixmapActor extends Actor {
     public void setCenterX(float x) { setX(x - getWidth() / 2); }
     public void setCenterY(float y) { setY(y - getHeight() / 2); }
     public Pixmap getPixmap() { return pixmap; }
+    public boolean isEditableByPlayer() { return editableByPlayer; }
+    public void setEditableByPlayer(boolean editableByPlayer) { this.editableByPlayer = editableByPlayer; }
+
     /**
      * Set size then resize to fit the pixmap racio.
      */
@@ -72,6 +79,9 @@ public class PixmapActor extends Actor {
         if (isAI) {
             player = Player.AI;
         } else {
+            if (!isEditableByPlayer()) {
+                return;
+            }
             player = Player.HUMAN;
         }
         // get clicked position
@@ -136,4 +146,30 @@ public class PixmapActor extends Actor {
     // }
 
     public boolean containsCoo(int x, int y) { return x >= getX() && x <= getX() + getWidth() && y >= getY() && y <= getY() + getHeight(); }
+
+
+    public Vector2 getRandomPixelToDestroy(Color color, Pixmap playerPixmap) {
+        List<Vector2> pixels = new ArrayList<Vector2>();
+        for (int j = 0; j < pixmap.getHeight(); j++) {
+            for (int i = 0; i < pixmap.getWidth(); i++) {
+                // Different color between the 2 pixmap & pen have the wanted color.
+                if (pixmap.getPixel(i, j) == playerPixmap.getPixel(i, j) && !new Color(playerPixmap.getPixel(i, j)).equals(color)) {
+                    pixels.add(new Vector2(i, j));
+                }
+            }
+        }
+        return pixels.get(Pixelary.random.nextInt(pixels.size()));
+    }
+
+    public List<Vector2> getAllPixelWithSameColor(Color color) {
+        List<Vector2> pixels = new ArrayList<Vector2>();
+        for (int j = 0; j < pixmap.getHeight(); j++) {
+            for (int i = 0; i < pixmap.getWidth(); i++) {
+                if (new Color(pixmap.getPixel(i, j)).equals(color)) {
+                    pixels.add(new Vector2(i, j));
+                }
+            }
+        }
+        return pixels;
+    }
 }
