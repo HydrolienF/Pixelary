@@ -16,6 +16,7 @@ public class Player {
     public static float SPEED = 200;
     public Vector2 nextClickPosition;
     public List<Action> actions;
+    public boolean playOnModel;
 
 
     // Constructors ---------------------------------------------------------------------------------------------------
@@ -34,6 +35,11 @@ public class Player {
         pen.player = this;
     }
     public float getSpeed(float delta) { return SPEED * delta * Gdx.graphics.getWidth() / 1920; }
+    public boolean isPlayOnModel() { return playOnModel; }
+    public void setPlayOnModel(boolean playOnModel) {
+        this.playOnModel = playOnModel;
+        SPEED *= 3;
+    }
 
     // Functions ------------------------------------------------------------------------------------------------------
     // AI part
@@ -81,8 +87,23 @@ public class Player {
      */
     public void changeColor() {
         // color = Pixelary.getModelPixmap().getFirstUncompleteColor(Pixelary.getAIPixmap().getPixmap());
-        Vector2 pixelToPic = Pixelary.getAIPalette()
-                .getFirstPixelWithColor(Pixelary.getModelPixmap().getFirstUncompleteColor(Pixelary.getAIPixmap().getPixmap()));
+        PixmapActor aiPixmapActor;
+        PixmapActor modelPixmapActor;
+        if (playOnModel) { // reverse mode
+            aiPixmapActor = Pixelary.getModelPixmap();
+            modelPixmapActor = Pixelary.getAIPixmap();
+        } else { // normal mode
+            aiPixmapActor = Pixelary.getAIPixmap();
+            modelPixmapActor = Pixelary.getModelPixmap();
+        }
+        Color firstUnComplete = modelPixmapActor.getFirstUncompleteColor(aiPixmapActor.getPixmap());
+        // Color firstUnComplete = Pixelary.getModelPixmap().getFirstUncompleteColor(Pixelary.getAIPixmap().getPixmap());
+        if (Pixelary.currentLevel == 3 && !(color.g >= color.b && color.g >= color.r)) {
+            System.out.println("Swap for color : " + color.r + " " + color.g + " " + color.b);
+            firstUnComplete = Color.WHITE;
+            setPlayOnModel(true);
+        }
+        Vector2 pixelToPic = Pixelary.getAIPalette().getFirstPixelWithColor(firstUnComplete);
         if (pixelToPic == null) {
             return;
         }
@@ -95,12 +116,21 @@ public class Player {
      * @return true if there is a next pixel to place with this color.
      */
     public boolean placeNextPixel() {
-        Vector2 pixelToDraw = Pixelary.getModelPixmap().getFirstPixelToCompleteWithColor(color, Pixelary.getAIPixmap().getPixmap());
+        PixmapActor aiPixmapActor;
+        PixmapActor modelPixmapActor;
+        if (playOnModel) { // reverse mode
+            aiPixmapActor = Pixelary.getModelPixmap();
+            modelPixmapActor = Pixelary.getAIPixmap();
+        } else { // normal mode
+            aiPixmapActor = Pixelary.getAIPixmap();
+            modelPixmapActor = Pixelary.getModelPixmap();
+        }
+        Vector2 pixelToDraw = modelPixmapActor.getFirstPixelToCompleteWithColor(color, aiPixmapActor.getPixmap());
         if (pixelToDraw == null) {
             return false;
         }
         // System.out.println("pixelToDraw = " + pixelToDraw);
-        nextClickPosition = Pixelary.getAIPixmap().toScreenCoord(pixelToDraw);
+        nextClickPosition = aiPixmapActor.toScreenCoord(pixelToDraw);
         Pixelary.setSpot(nextClickPosition);
         return true;
     }

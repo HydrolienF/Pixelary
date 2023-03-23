@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Action {
     enum Type {
-        ONE_PIXEL, ONE_LINE, REPLACE_COLOR
+        ONE_PIXEL, ONE_LINE, PLAY_ON_MODEL
     }
     float trigger;
     Type type;
@@ -67,7 +67,8 @@ public class Action {
                 nextPixel.add(new Vector2(center.x + i, center.y + j));
             }
             break;
-        case REPLACE_COLOR:
+        case PLAY_ON_MODEL:
+            Player.AI.setPlayOnModel(true);
             break;
         }
         if (!nextPixel.isEmpty()) {

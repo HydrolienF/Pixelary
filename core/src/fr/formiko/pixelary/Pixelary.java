@@ -52,7 +52,7 @@ public class Pixelary extends ApplicationAdapter {
 	private Label.LabelStyle labelStyle;
 	private int fontSize = 55;
 	private Color clearColor;
-	private int currentLevel;
+	static int currentLevel;
 	private Assets assets;
 	private static Vector2 aiTarget;
 	public static double scoreAI;
@@ -90,7 +90,7 @@ public class Pixelary extends ApplicationAdapter {
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
 
-		startNewLevel(1);
+		startNewLevel(3);
 	}
 
 	@Override
@@ -138,6 +138,7 @@ public class Pixelary extends ApplicationAdapter {
 		currentLevel = levelId;
 		stage.clear();
 		Player.AI.nextClickPosition = null;
+		Player.AI.playOnModel = false;
 
 		switch (levelId) {
 		case 1:
@@ -149,7 +150,7 @@ public class Pixelary extends ApplicationAdapter {
 			clearColor = new Color(0.75f, 0.7f, 0.7f, 1);
 			break;
 		case 3:
-			Player.SPEED = 200;
+			Player.SPEED = 100;
 			clearColor = new Color(0.6f, 0f, 0f, 1);
 			break;
 		}
@@ -179,11 +180,15 @@ public class Pixelary extends ApplicationAdapter {
 			Player.AI.actions.add(new Action(0.70f, Action.Type.ONE_LINE, 5, getPlayerPixmap()));
 			Player.AI.actions.add(new Action(0.72f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
 			Player.AI.actions.add(new Action(0.89f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
-			Player.AI.actions.add(new Action(0.95f, Action.Type.ONE_PIXEL, 20, getPlayerPixmap()));
-			Player.AI.actions.add(new Action(0.97f, Action.Type.ONE_LINE, 10, getPlayerPixmap()));
-			Player.AI.actions.add(new Action(0.99f, Action.Type.ONE_PIXEL, 50, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.95f, Action.Type.ONE_PIXEL, 10, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.97f, Action.Type.ONE_LINE, 20, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.99f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
 			break;
 		case 3:
+			Player.AI.actions.add(new Action(0.4f, Action.Type.ONE_PIXEL, 10, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.45f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.47f, Action.Type.ONE_LINE, 15, getPlayerPixmap()));
+			Player.AI.actions.add(new Action(0.89f, Action.Type.PLAY_ON_MODEL, 1, null));
 			break;
 		}
 	}
@@ -274,6 +279,8 @@ public class Pixelary extends ApplicationAdapter {
 		Pixmap paletteAI = Shapes.createWhitePixmap(colors.size(), 1);
 		int k = 0;
 		for (Integer color : colors) {
+			Color color2 = new Color(color);
+			System.out.println("color " + color2.r * 255 + " " + color2.g * 255 + " " + color2.b * 255);
 			paletteHuman.drawPixel(k, 0, color);
 			paletteAI.drawPixel(k, 0, color);
 			k++;

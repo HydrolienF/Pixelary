@@ -160,4 +160,16 @@ public class PixmapActor extends Actor {
         }
         return pixels.get(Pixelary.random.nextInt(pixels.size()));
     }
+
+    public List<Vector2> getAllPixelWithSameColor(Color color) {
+        List<Vector2> pixels = new ArrayList<Vector2>();
+        for (int j = 0; j < pixmap.getHeight(); j++) {
+            for (int i = 0; i < pixmap.getWidth(); i++) {
+                if (new Color(pixmap.getPixel(i, j)).equals(color)) {
+                    pixels.add(new Vector2(i, j));
+                }
+            }
+        }
+        return pixels;
+    }
 }
