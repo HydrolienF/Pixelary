@@ -5,6 +5,8 @@
 	<inherits name="space.earlygrey.shapedrawer"/>
 	<inherits name="regexodus.regexodus" />
 	<inherits name="com.github.tommyettinger.textratypist" />
+	<inherits name="com.esotericsoftware.spine" />
+	<!-- <inherits name="com.badlogicgames.gdx" /> -->
 
 	<inherits name='Pixelary' />
 	<entry-point class='fr.formiko.pixelary.client.HtmlLauncher' />

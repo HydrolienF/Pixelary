@@ -24,9 +24,10 @@ public class Assets implements Disposable {
     private static final String DIRECTORY = "images/spine/";
 
     public Assets() {
-        for (String childName : Files.listSubDirectory(DIRECTORY)) {
-            loadAsset(childName);
-        }
+        // for (String childName : Files.listSubDirectory(DIRECTORY)) {
+        // loadAsset(childName);
+        // }
+        loadAsset("pen");
     }
 
 

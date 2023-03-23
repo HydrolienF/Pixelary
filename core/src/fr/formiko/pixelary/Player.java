@@ -11,7 +11,7 @@ public class Player {
     public static Player AI = new Player();
     public static Player HUMAN = new Player();
     // public int id; // 0 is the player, 1 is the IA.
-    private static float SPEED = 400;
+    private static float SPEED = 200;
     public Vector2 nextClickPosition;
 
     public Player() { nextClickPosition = null; }
@@ -80,7 +80,7 @@ public class Player {
         if (pixelToDraw == null) {
             return false;
         }
-        System.out.println("pixelToDraw = " + pixelToDraw);
+        // System.out.println("pixelToDraw = " + pixelToDraw);
         nextClickPosition = Pixelary.getAIPixmap().toScreenCoord(pixelToDraw);
         Pixelary.setSpot(nextClickPosition);
         return true;

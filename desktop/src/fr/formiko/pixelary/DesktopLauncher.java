@@ -12,6 +12,6 @@ public class DesktopLauncher {
 		// config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		config.setMaximized(true);
 		// config.setResizable(false);
-		new Lwjgl3Application(new Pixelary(), config);
+		new Lwjgl3Application(new Pixelary(arg), config);
 	}
 }
