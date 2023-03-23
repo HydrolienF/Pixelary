@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class PixmapActor extends Actor {
     private final Pixmap pixmap;
     private final boolean pic;
+    private boolean editableByPlayer;
 
     public PixmapActor(Pixmap pixmap, boolean pic) {
         super();
@@ -22,6 +23,7 @@ public class PixmapActor extends Actor {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) { click(false, (int) x, (int) y); }
         });
+        editableByPlayer = true;
     }
     public PixmapActor(Pixmap pixmap) { this(pixmap, false); }
 
@@ -30,6 +32,9 @@ public class PixmapActor extends Actor {
     public void setCenterX(float x) { setX(x - getWidth() / 2); }
     public void setCenterY(float y) { setY(y - getHeight() / 2); }
     public Pixmap getPixmap() { return pixmap; }
+    public boolean isEditableByPlayer() { return editableByPlayer; }
+    public void setEditableByPlayer(boolean editableByPlayer) { this.editableByPlayer = editableByPlayer; }
+
     /**
      * Set size then resize to fit the pixmap racio.
      */
@@ -72,6 +77,9 @@ public class PixmapActor extends Actor {
         if (isAI) {
             player = Player.AI;
         } else {
+            if (!isEditableByPlayer()) {
+                return;
+            }
             player = Player.HUMAN;
         }
         // get clicked position

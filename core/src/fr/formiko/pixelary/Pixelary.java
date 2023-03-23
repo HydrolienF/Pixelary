@@ -104,14 +104,14 @@ public class Pixelary extends ApplicationAdapter {
 		stage.act();
 		stage.draw();
 
-		// TODO to comment
-		batch.begin();
-		// show AI behavior
-		if (aiTarget != null) {
-			shapeDrawer.setColor(Color.BLUE);
-			shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
-		}
-		batch.end();
+		// // TODO to comment
+		// batch.begin();
+		// // show AI behavior
+		// if (aiTarget != null) {
+		// shapeDrawer.setColor(Color.BLUE);
+		// shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
+		// }
+		// batch.end();
 
 	}
 
@@ -136,12 +136,15 @@ public class Pixelary extends ApplicationAdapter {
 
 		switch (levelId) {
 		case 1:
+			Player.SPEED = 150;
 			clearColor = new Color(0.9f, 0.9f, 0.9f, 1);
 			break;
 		case 2:
+			Player.SPEED = 150;
 			clearColor = new Color(0.75f, 0.7f, 0.7f, 1);
 			break;
 		case 3:
+			Player.SPEED = 200;
 			clearColor = new Color(0.6f, 0f, 0f, 1);
 			break;
 		}
@@ -221,6 +224,14 @@ public class Pixelary extends ApplicationAdapter {
 		pixmapActors.add(new PixmapActor(aiPixmap));
 		pixmapActors.add(new PixmapActor(modelPixmap));
 		pixmapActors.add(new PixmapActor(userPixmap));
+
+		if (levelId == 1) {
+			pixmapActors.get(0).setEditableByPlayer(false);
+			pixmapActors.get(1).setEditableByPlayer(false);
+		}
+		// if (levelId == 2) {
+		// pixmapActors.get(1).setEditableByPlayer(false);
+		// }
 
 		for (PixmapActor pixmapActor : pixmapActors) {
 			stage.addActor(pixmapActor);
