@@ -1,1 +1,1 @@
-First playable version (without AI)
+First version with full behavior of AI & 1/3 musics

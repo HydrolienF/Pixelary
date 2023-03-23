@@ -109,14 +109,14 @@ public class Pixelary extends ApplicationAdapter {
 		stage.act();
 		stage.draw();
 
-		// TODO to comment
-		batch.begin();
-		// show AI behavior
-		if (aiTarget != null) {
-			shapeDrawer.setColor(Color.BLUE);
-			shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
-		}
-		batch.end();
+		// // TODO to comment
+		// batch.begin();
+		// // show AI behavior
+		// if (aiTarget != null) {
+		// shapeDrawer.setColor(Color.BLUE);
+		// shapeDrawer.filledCircle(aiTarget.x, aiTarget.y, 10);
+		// }
+		// batch.end();
 
 	}
 
