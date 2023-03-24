@@ -14,6 +14,7 @@ public class PixmapActor extends Actor {
     private final Pixmap pixmap;
     private final boolean pic;
     private boolean editableByPlayer;
+    private boolean displayhelp;
 
     public PixmapActor(Pixmap pixmap, boolean pic) {
         super();
@@ -36,6 +37,10 @@ public class PixmapActor extends Actor {
     public Pixmap getPixmap() { return pixmap; }
     public boolean isEditableByPlayer() { return editableByPlayer; }
     public void setEditableByPlayer(boolean editableByPlayer) { this.editableByPlayer = editableByPlayer; }
+    public void switchDisplayHelp() {
+        displayhelp = !displayhelp;
+        System.out.println("displayhelp = " + displayhelp);
+    }
 
     /**
      * Set size then resize to fit the pixmap racio.
@@ -61,11 +66,21 @@ public class PixmapActor extends Actor {
             for (int j = 0; j < pixmap.getHeight(); j++) {
                 int color = pixmap.getPixel(i, j);
                 Pixelary.shapeDrawer.setColor(new Color(color));
+                float x = getX() + i * pixelSize;
+                float y = getY() + h - (j + 1) * pixelSize;
                 // Pixelary.shapeDrawer.setColor(NumberUtils.intToFloatColor(color));
                 // Pixelary.shapeDrawer.getPackedColor();
-                Pixelary.shapeDrawer.filledRectangle(getX() + i * pixelSize, getY() + h - (j + 1) * pixelSize, pixelSize, pixelSize);
+                Pixelary.shapeDrawer.filledRectangle(x, y, pixelSize, pixelSize);
+                if (displayhelp && Pixelary.getModelPixmap().getPixmap().getPixel(i, j) != color) {
+                    Color c = new Color(color);
+                    Pixelary.shapeDrawer.setColor(1f - c.r, 1f - c.g, 1f - c.b, 1f);
+                    Pixelary.shapeDrawer.line(x, y, x + pixelSize, y + pixelSize);
+                    Pixelary.shapeDrawer.line(x + pixelSize, y, x, y + pixelSize);
+                    // Pixelary.shapeDrawer.rectangle(getX() + i * pixelSize + 1, getY() + h - (j + 1) * pixelSize + 1, pixelSize - 2,
+                    // pixelSize - 2);
+                }
                 Pixelary.shapeDrawer.setColor(Color.BLACK);
-                Pixelary.shapeDrawer.rectangle(getX() + i * pixelSize, getY() + h - (j + 1) * pixelSize, pixelSize, pixelSize);
+                Pixelary.shapeDrawer.rectangle(x, y, pixelSize, pixelSize);
             }
         }
     }
