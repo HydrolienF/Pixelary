@@ -157,7 +157,7 @@ public class Pixelary extends ApplicationAdapter {
 			clearColor = new Color(0.9f, 0.9f, 0.9f, 1);
 			break;
 		case 2:
-			Player.SPEED = 350;
+			Player.SPEED = 300;
 			clearColor = new Color(0.75f, 0.7f, 0.7f, 1);
 			break;
 		case 3:
