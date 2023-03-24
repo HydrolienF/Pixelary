@@ -184,6 +184,44 @@ public class Pixelary extends ApplicationAdapter {
 
 		Musics.playLevelMusic(levelId);
 
+		displayBeforeLevelText(levelId);
+	}
+
+	public void displayBeforeLevelText(int levelId) {
+		String text = "";
+		switch (currentLevel) {
+		case 1:
+			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...\n";
+			break;
+		case 2:
+			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";;
+			break;
+		case 3:
+			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
+			break;
+		}
+		text += "\n(Click anywere to start)";
+		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
+		textScreen.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) { startLevel(levelId); }
+		});
+		stage.addActor(textScreen);
+	}
+	private void startLevel(int levelId) {
+		switch (levelId) {
+		case 1:
+			Player.SPEED = 150;
+			break;
+		case 2:
+			Player.SPEED = 300;
+			break;
+		case 3:
+			Player.SPEED = 100;
+			break;
+		}
+		textScreen.remove();
+
 		switch (levelId) {
 		case 2:
 			Player.AI.actions.add(new Action(0.4f, Action.Type.ONE_PIXEL, 3, getPlayerPixmap()));
@@ -204,50 +242,6 @@ public class Pixelary extends ApplicationAdapter {
 			Player.AI.actions.add(new Action(0.89f, Action.Type.PLAY_ON_MODEL, 1, null));
 			break;
 		}
-
-		displayBeforeLevelText(levelId);
-	}
-
-	public void displayBeforeLevelText(int levelId) {
-		String text = "";
-		switch (currentLevel) {
-		case 1:
-			text = """
-					Welcome player, I'm Frenchzebutt, your friend to play Pixelary !
-					Déjà vue fealing ? Many people think I'm my twin Beelzebot.
-
-					Aim is to reproduce the model as fast as possible ! The first one to do it wins !
-					But there is no way you will win it, anyway...""";
-			break;
-		case 2:
-			text = """
-					Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !
-					I won't play fair anymore ! I will use my secret weapon !""";;
-			break;
-		case 3:
-			text = """
-					I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT ! NO ONE HAVE EVER SURVIVE AFTER BRAVE ME !""";
-			break;
-		}
-		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
-		textScreen.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				switch (levelId) {
-				case 1:
-					Player.SPEED = 150;
-					break;
-				case 2:
-					Player.SPEED = 300;
-					break;
-				case 3:
-					Player.SPEED = 100;
-					break;
-				}
-				textScreen.remove();
-			}
-		});
-		stage.addActor(textScreen);
 	}
 
 	@Override
@@ -377,7 +371,7 @@ public class Pixelary extends ApplicationAdapter {
 			levelDraw = "";
 			break;
 		}
-		labelNames.add(adjectif + "AI");
+		labelNames.add(adjectif + "Frenchzebutt");
 		labelNames.add("");
 		labelNames.add("Level " + levelId);
 		labelNames.add(levelDraw);
@@ -454,19 +448,13 @@ public class Pixelary extends ApplicationAdapter {
 		if (win) {
 			switch (currentLevel) {
 			case 1:
-				text = """
-						Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !
-						I won't play fair anymore ! I will use my secret weapon !""";;
+				text = "Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !\nI won't play fair anymore ! I will use my secret weapon !";;
 				break;
 			case 2:
-				text = """
-						I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT ! NO ONE HAVE EVER SURVIVE AFTER BRAVE ME !""";
+				text = "I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !";
 				break;
 			case 3:
-				text = """
-						The cursed pineapple have choose, It's time for be to give up.
-						But I will be back in next libgdx jam !
-						Check hydrolien's game for more.""";;
+				text = "The cursed pineapple have choose, It's time for be to give up.\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
 				break;
 			default:
 				text = "You Win!";
