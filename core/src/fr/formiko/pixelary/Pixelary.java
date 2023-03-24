@@ -5,6 +5,7 @@ import fr.formiko.pixelary.tools.Musics;
 import fr.formiko.pixelary.tools.Shapes;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -139,6 +140,7 @@ public class Pixelary extends ApplicationAdapter {
 		stage.clear();
 		Player.AI.nextClickPosition = null;
 		Player.AI.playOnModel = false;
+		Player.AI.actions = new LinkedList<Action>();
 
 		switch (levelId) {
 		case 1:
