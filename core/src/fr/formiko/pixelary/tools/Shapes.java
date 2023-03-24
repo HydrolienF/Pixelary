@@ -135,7 +135,6 @@ public class Shapes {
         for (int x = 0; x < texturePixmapSized.getWidth(); x++) {
             for (int y = 0; y < texturePixmapSized.getHeight(); y++) {
                 int distToCenter = (int) Math.getDistanceBetweenPoints(xOffset + x, yOffset + y, xCenter, yCenter);
-                // TODO in [distToCenter-0.5, distToCenter+0.5] color should be with alpha to make a smooth border
                 if (distToCenter <= radius) {
                     pixmap.drawPixel(xOffset + x, yOffset + y, texturePixmapSized.getPixel(x, y));
                 }
@@ -164,7 +163,6 @@ public class Shapes {
         for (int x = 0; x < pixmap.getWidth(); x++) {
             for (int y = 0; y < pixmap.getHeight(); y++) {
                 int distToCenter = (int) Math.getDistanceBetweenPoints(x, y, xCenter, yCenter);
-                // TODO in [distToCenter-0.5, distToCenter+0.5] color should be with alpha to make a smooth border
                 if (distToCenter > radius - edgeLength && distToCenter <= radius) {
                     pixmap.drawPixel(x, y, color);
                 }

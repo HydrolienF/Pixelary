@@ -44,34 +44,37 @@ public class Player {
     // Functions ------------------------------------------------------------------------------------------------------
     // AI part
     public void moveAsAI(float delta) {
-        if (nextClickPosition == null || nextClickPosition.x == -1f || nextClickPosition.y == -1f) {
-            // Find the next move to do.
-            if (actions.size() > 0 && actions.get(0).triggered()) { // annoy player
-                Action a = actions.get(0);
-                nextClickPosition = a.getClickPosition();
-                if (a.isOver()) {
-                    actions.remove(0);
+        try {
+            if (nextClickPosition == null || nextClickPosition.x == -1f || nextClickPosition.y == -1f) {
+                // Find the next move to do.
+                if (actions.size() > 0 && actions.get(0).triggered()) { // annoy player
+                    Action a = actions.get(0);
+                    nextClickPosition = a.getClickPosition();
+                    if (a.isOver()) {
+                        actions.remove(0);
+                    }
+                    // System.out.println("nextClickPosition to annoy player = " + nextClickPosition);
+                } else { // get a better score.
+                    // Simple AI use every color to color every pixel then win.
+                    if (!placeNextPixel()) {
+                        changeColor();
+                    }
                 }
-                // System.out.println("nextClickPosition to annoy player = " + nextClickPosition);
-            } else { // get a better score.
-                // Simple AI use every color to color every pixel then win.
-                if (!placeNextPixel()) {
-                    changeColor();
-                }
-            }
-        } else {
-            // Do the next move to do.
-            if (isOverNextClickPosition()) {
-                // Pixelary.getAIPixmap().getStage().touchDown((int) nextClickPosition.x, (int) nextClickPosition.y, 0, 0);
-                Pixelary.clickFromScreenCoo(true, (int) nextClickPosition.x, (int) nextClickPosition.y);
-                nextClickPosition = null;
-                return;
             } else {
-                Vector2 v2 = new Vector2(nextClickPosition.x - pen.getX(), nextClickPosition.y - pen.getY());
-                pen.moveFront(getSpeed(delta), v2);
+                // Do the next move to do.
+                if (isOverNextClickPosition()) {
+                    // Pixelary.getAIPixmap().getStage().touchDown((int) nextClickPosition.x, (int) nextClickPosition.y, 0, 0);
+                    Pixelary.clickFromScreenCoo(true, (int) nextClickPosition.x, (int) nextClickPosition.y);
+                    nextClickPosition = null;
+                    return;
+                } else {
+                    Vector2 v2 = new Vector2(nextClickPosition.x - pen.getX(), nextClickPosition.y - pen.getY());
+                    pen.moveFront(getSpeed(delta), v2);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     public boolean isOverNextClickPosition() {

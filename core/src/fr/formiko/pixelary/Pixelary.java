@@ -36,7 +36,6 @@ import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonRenderer;
-import com.github.tommyettinger.textra.TypingLabel;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 
@@ -53,7 +52,7 @@ public class Pixelary extends ApplicationAdapter {
 	private Camera camera;
 	private Viewport viewport;
 	private InputMultiplexer inputMultiplexer;
-	private Label.LabelStyle labelStyle;
+	public static Label.LabelStyle labelStyle;
 	private int fontSize = 55;
 	private Color clearColor;
 	static int currentLevel;
@@ -62,6 +61,7 @@ public class Pixelary extends ApplicationAdapter {
 	public static double scoreAI;
 	public static double scorePlayer;
 	public static Random random = new Random();
+	public static TextScreen textScreen;
 
 
 	public Pixelary() {}
@@ -81,6 +81,7 @@ public class Pixelary extends ApplicationAdapter {
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		stage = new Stage(viewport, batch);
+		// stage.setDebugAll(true); // @a
 		inputMultiplexer.addProcessor(stage);
 
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
@@ -101,6 +102,7 @@ public class Pixelary extends ApplicationAdapter {
 		});
 
 		startNewLevel(1);
+
 	}
 
 	@Override
@@ -114,12 +116,13 @@ public class Pixelary extends ApplicationAdapter {
 		}
 		batch.end();
 
-		updatePercent();
+		if (Player.SPEED > 0) {
+			updatePercent();
+		}
 
 		stage.act();
 		stage.draw();
 
-		// // TODO to comment
 		// batch.begin();
 		// // show AI behavior
 		// if (aiTarget != null) {
@@ -141,7 +144,6 @@ public class Pixelary extends ApplicationAdapter {
 		pixmapActors = null;
 		paletteActors = null;
 		labels = null;
-		Musics.stop();
 	}
 
 	public void startNewLevel(int levelId) {
@@ -203,20 +205,49 @@ public class Pixelary extends ApplicationAdapter {
 			break;
 		}
 
-		// TODO display before level text & prevent player from playing & when player have ask to start set speed to AI.
-		// TODO catch click from anywhere on the screen as a start.
-		// TODO catch Enter or Space to start
-		switch (levelId) {
+		displayBeforeLevelText(levelId);
+	}
+
+	public void displayBeforeLevelText(int levelId) {
+		String text = "";
+		switch (currentLevel) {
 		case 1:
-			Player.SPEED = 150;
+			text = """
+					Welcome player, I'm Frenchzebutt, your friend to play Pixelary !
+					Déjà vue fealing ? Many people think I'm my twin Beelzebot.
+
+					Aim is to reproduce the model as fast as possible ! The first one to do it wins !
+					But there is no way you will win it, anyway...""";
 			break;
 		case 2:
-			Player.SPEED = 300;
+			text = """
+					Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !
+					I won't play fair anymore ! I will use my secret weapon !""";;
 			break;
 		case 3:
-			Player.SPEED = 100;
+			text = """
+					I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT ! NO ONE HAVE EVER SURVIVE AFTER BRAVE ME !""";
 			break;
 		}
+		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
+		textScreen.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				switch (levelId) {
+				case 1:
+					Player.SPEED = 150;
+					break;
+				case 2:
+					Player.SPEED = 300;
+					break;
+				case 3:
+					Player.SPEED = 100;
+					break;
+				}
+				textScreen.remove();
+			}
+		});
+		stage.addActor(textScreen);
 	}
 
 	@Override
@@ -265,6 +296,10 @@ public class Pixelary extends ApplicationAdapter {
 
 		helpButton.setSize(48, 48);
 		helpButton.setPosition(w - helpButton.getWidth(), h - helpButton.getHeight());
+
+		if (textScreen != null) {
+			textScreen.setSize(w, h);
+		}
 	}
 
 	/** Create the 3 drawing pixmap. */
@@ -413,56 +448,38 @@ public class Pixelary extends ApplicationAdapter {
 	}
 
 	public void endGame(final boolean win) {
-		stage.clear();
-		disposeLevel();
+		Player.SPEED = 0;
+		Musics.stop();
 		String text;
 		if (win) {
-			// @formatter:off
 			switch (currentLevel) {
-			case 0:
-				text = """
-Welcome player, I'm Frenchzebutt, your friend to play Pixelary !
-Déjà vue fealing ? Many people think I'm my twin Beelzebot.
-
-Aim is to reproduce the model as fast as possible ! The first one to do it wins !
-But there is no way you will win it, anyway...""";
-				break;
 			case 1:
 				text = """
-Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !
-I won't play fair anymore ! I will use my secret weapon !
-
-Now were competing for gold !
-Déjà vue fealing ? It's from my favorite game.
-						""";;
+						Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !
+						I won't play fair anymore ! I will use my secret weapon !""";;
 				break;
 			case 2:
 				text = """
-I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT ! NO ONE HAVE EVER SURVIVE AFTER BRAVE ME !
-
-LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !
-						""";
+						I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT ! NO ONE HAVE EVER SURVIVE AFTER BRAVE ME !""";
 				break;
 			case 3:
 				text = """
-The cursed pineapple have choose, It's time for be to give up.
-But I will be back in next libgdx jam !
-Check hydrolien's game for more.
-						""";;
+						The cursed pineapple have choose, It's time for be to give up.
+						But I will be back in next libgdx jam !
+						Check hydrolien's game for more.""";;
 				break;
 			default:
 				text = "You Win!";
 				break;
 			}
-			text+="\n Click HERE to play next level";
-			// @formatter:on
+			text += "\n(Click anywere to play next level)";
 			// TODO play win music
 		} else {
-			text = "You Lose!\n Click HERE to retry";
+			text = "You Lose!\n Click anywere to retry";
 			// TODO play lose music
 		}
-		TypingLabel label = new TypingLabel(text, labelStyle);
-		label.addListener(new ClickListener() {
+		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
+		textScreen.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (win) {
@@ -473,11 +490,7 @@ Check hydrolien's game for more.
 			}
 		});
 
-		label.setAlignment(Align.center);
-		label.setSize(label.getPrefWidth(), label.getPrefHeight());
-		label.setY((h - label.getHeight()) / 2);
-		label.setX(Gdx.graphics.getWidth() / 2 - label.getWidth() / 2);
-		stage.addActor(label);
+		stage.addActor(textScreen);
 	}
 
 	/**
