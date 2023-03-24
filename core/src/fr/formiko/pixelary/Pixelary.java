@@ -12,6 +12,7 @@ import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -44,6 +46,7 @@ public class Pixelary extends ApplicationAdapter {
 	private static List<PixmapActor> paletteActors;
 	private static List<Label> labels;
 	public static ShapeDrawer shapeDrawer;
+	private Image helpButton;
 	private Stage stage;
 	private int w;
 	private int h;
@@ -90,6 +93,12 @@ public class Pixelary extends ApplicationAdapter {
 
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
+
+		helpButton = new Image(new Texture(new FileHandle("images/icons/basic/help.png")));
+		helpButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) { getPlayerPixmap().switchDisplayHelp(); }
+		});
 
 		startNewLevel(1);
 	}
@@ -162,6 +171,8 @@ public class Pixelary extends ApplicationAdapter {
 		createPalettes();
 
 		createLabels(levelId);
+
+		stage.addActor(helpButton);
 
 		createPens();
 
@@ -238,6 +249,9 @@ public class Pixelary extends ApplicationAdapter {
 			pixmapActor.setCenterY(marginPixel);
 			k += 2;
 		}
+
+		helpButton.setSize(48, 48);
+		helpButton.setPosition(w - helpButton.getWidth(), h - helpButton.getHeight());
 	}
 
 	/** Create the 3 drawing pixmap. */

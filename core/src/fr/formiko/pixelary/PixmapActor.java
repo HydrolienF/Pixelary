@@ -14,6 +14,7 @@ public class PixmapActor extends Actor {
     private final Pixmap pixmap;
     private final boolean pic;
     private boolean editableByPlayer;
+    private boolean displayhelp;
 
     public PixmapActor(Pixmap pixmap, boolean pic) {
         super();
@@ -36,6 +37,10 @@ public class PixmapActor extends Actor {
     public Pixmap getPixmap() { return pixmap; }
     public boolean isEditableByPlayer() { return editableByPlayer; }
     public void setEditableByPlayer(boolean editableByPlayer) { this.editableByPlayer = editableByPlayer; }
+    public void switchDisplayHelp() {
+        displayhelp = !displayhelp;
+        System.out.println("displayhelp = " + displayhelp);
+    }
 
     /**
      * Set size then resize to fit the pixmap racio.
