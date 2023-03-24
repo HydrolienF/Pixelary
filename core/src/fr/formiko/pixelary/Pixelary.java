@@ -151,17 +151,15 @@ public class Pixelary extends ApplicationAdapter {
 		Player.AI.playOnModel = false;
 		Player.AI.actions = new LinkedList<Action>();
 
+		Player.SPEED = 0f;
 		switch (levelId) {
 		case 1:
-			Player.SPEED = 150;
 			clearColor = new Color(0.9f, 0.9f, 0.9f, 1);
 			break;
 		case 2:
-			Player.SPEED = 300;
 			clearColor = new Color(0.75f, 0.7f, 0.7f, 1);
 			break;
 		case 3:
-			Player.SPEED = 100;
 			clearColor = new Color(0.6f, 0f, 0f, 1);
 			break;
 		}
@@ -202,6 +200,20 @@ public class Pixelary extends ApplicationAdapter {
 			Player.AI.actions.add(new Action(0.45f, Action.Type.ONE_PIXEL, 5, getPlayerPixmap()));
 			Player.AI.actions.add(new Action(0.47f, Action.Type.ONE_LINE, 15, getPlayerPixmap()));
 			Player.AI.actions.add(new Action(0.89f, Action.Type.PLAY_ON_MODEL, 1, null));
+			break;
+		}
+
+		// TODO display before level text & prevent player from playing & when player have ask to start set speed to AI.
+
+		switch (levelId) {
+		case 1:
+			Player.SPEED = 150;
+			break;
+		case 2:
+			Player.SPEED = 300;
+			break;
+		case 3:
+			Player.SPEED = 100;
 			break;
 		}
 	}
@@ -398,17 +410,50 @@ public class Pixelary extends ApplicationAdapter {
 			endGame(false);
 		}
 	}
+
 	public void endGame(final boolean win) {
 		stage.clear();
 		disposeLevel();
 		String text;
 		if (win) {
-			text = "You Win!";
-			if (currentLevel == 3) {
-				text += "\n thanks for playing!";
-			} else {
-				text += "\n Click HERE to play next level";
+			// @formatter:off
+			switch (currentLevel) {
+			case 0:
+				text = """
+Welcome player, I'm Frenchzebutt, your friend to play Pixelary !
+Déjà vue fealing ? Many people think I'm my twin Beelzebot.
+
+Aim is to reproduce the model as fast as possible ! The first one to do it wins !
+But there is no way you will win it, anyway...""";
+				break;
+			case 1:
+				text = """
+Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !
+I won't play fair anymore ! I will use my secret weapon !
+
+Now were competing for gold !
+Déjà vue fealing ? It's from my favorite game.
+						""";;
+				break;
+			case 2:
+				text = """
+I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT ! NO ONE HAVE EVER SURVIVE AFTER BRAVE ME !
+
+LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !
+						""";
+				break;
+			case 3:
+				text = """
+The cursed pineapple have choose, It's time for be to give up.
+But I will be back in next libgdx jam !
+Check hydrolien's game for more.
+						""";;
+				break;
+			default:
+				text = "You Win!\n Click HERE to play next level";
+				break;
 			}
+			// @formatter:on
 			// TODO play win music
 		} else {
 			text = "You Lose!\n Click HERE to retry";
@@ -427,8 +472,8 @@ public class Pixelary extends ApplicationAdapter {
 		});
 
 		label.setAlignment(Align.center);
-		label.setSize(label.getPrefWidth(), fontSize * 2);
-		label.setY(h - 2 * fontSize);
+		label.setSize(label.getPrefWidth(), label.getPrefHeight());
+		label.setY((h - label.getHeight()) / 2);
 		label.setX(Gdx.graphics.getWidth() / 2 - label.getWidth() / 2);
 		stage.addActor(label);
 	}
