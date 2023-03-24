@@ -233,7 +233,7 @@ public class Pixelary extends ApplicationAdapter {
 		for (PixmapActor pixmapActor : paletteActors) {
 			pixmapActor.setSize(pixelSize * pixmapActor.getPixmap().getWidth(), pixelSize * pixmapActor.getPixmap().getHeight());
 			pixmapActor.setCenterX((w / 3 * k + w / 6));
-			pixmapActor.setCenterY(marginPixel / 2);
+			pixmapActor.setCenterY(marginPixel);
 			k += 2;
 		}
 	}
