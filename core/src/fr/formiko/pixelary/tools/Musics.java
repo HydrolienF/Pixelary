@@ -117,6 +117,7 @@ public class Musics {
      */
     public static void playLevelMusic(int levelId) {
         play("lvl" + levelId);
+        setVolume(0.4f);
         setLooping(true);
     }
 }

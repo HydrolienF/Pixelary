@@ -4,9 +4,11 @@ import fr.formiko.pixelary.tools.Assets;
 import fr.formiko.pixelary.tools.Musics;
 import fr.formiko.pixelary.tools.Shapes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -63,6 +66,7 @@ public class Pixelary extends ApplicationAdapter {
 	public static double scorePlayer;
 	public static Random random = new Random();
 	public static TextScreen textScreen;
+	private static Map<String, Sound> soundMap = new HashMap<String, Sound>();
 
 
 	public Pixelary() {}
@@ -191,7 +195,7 @@ public class Pixelary extends ApplicationAdapter {
 
 	public void displayBeforeLevelText(int levelId) {
 		String text = "";
-		switch (currentLevel) {
+		switch (levelId) {
 		case 1:
 			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...";
 			break;
@@ -202,6 +206,7 @@ public class Pixelary extends ApplicationAdapter {
 			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
 			break;
 		}
+		playSound("b" + levelId);
 		text += "\n[70%](Click anywere to start)[%]";
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
@@ -456,17 +461,19 @@ public class Pixelary extends ApplicationAdapter {
 				text = "{SHRINK}I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !{ENDSHRINK}";
 				break;
 			case 3:
-				text = "The cursed pineapple have choose,\nIt's time for be to give up.\n\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
+				text = "The cursed pineapple have choose,\nIt's time for me to give up.\n\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
 				break;
 			default:
 				text = "You Win!";
 				break;
 			}
-			text += "\n[70%]70%(Click anywere to play next level)70%[%]";
+			text += "\n[70%](Click anywere to play next level)[%]";
 			// TODO play win music
+			playSound("a" + currentLevel);
 		} else {
 			text = "You Lose!\n Click anywere to retry";
 			// TODO play lose music
+			// TODO play hahahaha
 		}
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
@@ -546,5 +553,27 @@ public class Pixelary extends ApplicationAdapter {
 		};
 		return inputProcessor;
 	}
+
+	/**
+	 * {@summary Play the given sound.}
+	 * Sound can be play many times &#38; at same time.
+	 * 
+	 * @param fileName name of the sound file
+	 * @param volume   volume of the sound in [0, 1]
+	 * @param pan      left rigth ballance of the sound file in [-1, 1]
+	 */
+	public static void playSound(String fileName, float volume, float pan) {
+		if (soundMap.get(fileName) == null) {
+			soundMap.put(fileName, Gdx.audio.newSound(Gdx.files.internal("sounds/" + fileName + ".mp3")));
+		}
+		soundMap.get(fileName).play(volume, 1f, pan);
+	}
+	/**
+	 * {@summary Play the given sound with default volume &#38; default pan.}
+	 * Sound can be play many times &#38; at same time.
+	 * 
+	 * @param fileName name of the sound file
+	 */
+	public static void playSound(String fileName) { playSound(fileName, 1f, -0.2f); }
 }
 
