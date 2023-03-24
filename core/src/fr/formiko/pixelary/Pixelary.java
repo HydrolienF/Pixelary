@@ -11,7 +11,9 @@ import java.util.Random;
 import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -82,11 +84,12 @@ public class Pixelary extends ApplicationAdapter {
 		stage = new Stage(viewport, batch);
 		// stage.setDebugAll(true); // @a
 		inputMultiplexer.addProcessor(stage);
+		inputMultiplexer.addProcessor(getInputProcessor());
 
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
 		pixmap.setColor(Color.WHITE);
 		pixmap.drawPixel(0, 0);
-		Texture texture = new Texture(pixmap); // remember to dispose of later
+		Texture texture = new Texture(pixmap);
 		pixmap.dispose();
 		TextureRegion region = new TextureRegion(texture, 0, 0, 1, 1);
 		shapeDrawer = new ShapeDrawer(batch, region);
@@ -190,7 +193,7 @@ public class Pixelary extends ApplicationAdapter {
 		String text = "";
 		switch (currentLevel) {
 		case 1:
-			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...\n";
+			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...";
 			break;
 		case 2:
 			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";;
@@ -199,7 +202,7 @@ public class Pixelary extends ApplicationAdapter {
 			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
 			break;
 		}
-		text += "\n(Click anywere to start)";
+		text += "\n[70%](Click anywere to start)[%]";
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
 			@Override
@@ -447,19 +450,19 @@ public class Pixelary extends ApplicationAdapter {
 		if (win) {
 			switch (currentLevel) {
 			case 1:
-				text = "Rrrrraaa ! How can it be ?! No one have ever beat Frenchzebutt !\nI won't play fair anymore ! I will use my secret weapon !";;
+				text = "Rrrrraaa ! How can it be ?!\n No one have ever beat Frenchzebutt !\nI won't play fair anymore ! I will use my secret weapon !";;
 				break;
 			case 2:
-				text = "I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !";
+				text = "{SHRINK}I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !{ENDSHRINK}";
 				break;
 			case 3:
-				text = "The cursed pineapple have choose, It's time for be to give up.\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
+				text = "The cursed pineapple have choose,\nIt's time for be to give up.\n\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
 				break;
 			default:
 				text = "You Win!";
 				break;
 			}
-			text += "\n(Click anywere to play next level)";
+			text += "\n[70%]70%(Click anywere to play next level)70%[%]";
 			// TODO play win music
 		} else {
 			text = "You Lose!\n Click anywere to retry";
@@ -499,6 +502,49 @@ public class Pixelary extends ApplicationAdapter {
 				return;
 			}
 		}
+	}
+
+	/**
+	 * {@summary Handle user input.}<br>
+	 */
+	private InputProcessor getInputProcessor() {
+		InputProcessor inputProcessor = (InputProcessor) new InputProcessor() {
+
+			@Override
+			public boolean keyDown(int keycode) { return false; }
+			/**
+			 * {@summary React to key pressed once.}
+			 * 
+			 * @param keycode the key pressed
+			 */
+			@Override
+			public boolean keyUp(int keycode) {
+				if (keycode == Input.Keys.W) {
+					endGame(true);
+				}
+				return true;
+			}
+
+			@Override
+			public boolean keyTyped(char character) { return false; }
+
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
+
+			@Override
+			public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
+
+			@Override
+			public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
+
+			@Override
+			public boolean mouseMoved(int screenX, int screenY) { return false; }
+
+			@Override
+			public boolean scrolled(float amountX, float amountY) { return false; }
+
+		};
+		return inputProcessor;
 	}
 }
 
