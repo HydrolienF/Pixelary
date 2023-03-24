@@ -12,7 +12,6 @@ import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -95,7 +94,7 @@ public class Pixelary extends ApplicationAdapter {
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
 
-		helpButton = new Image(new Texture(new FileHandle("images/icons/basic/help.png")));
+		helpButton = new Image(new Texture(Gdx.files.internal("images/icons/basic/help.png")));
 		helpButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) { getPlayerPixmap().switchDisplayHelp(); }
@@ -502,3 +501,4 @@ public class Pixelary extends ApplicationAdapter {
 		}
 	}
 }
+
