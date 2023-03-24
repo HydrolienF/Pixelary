@@ -204,7 +204,8 @@ public class Pixelary extends ApplicationAdapter {
 		}
 
 		// TODO display before level text & prevent player from playing & when player have ask to start set speed to AI.
-
+		// TODO catch click from anywhere on the screen as a start.
+		// TODO catch Enter or Space to start
 		switch (levelId) {
 		case 1:
 			Player.SPEED = 150;
@@ -450,9 +451,10 @@ Check hydrolien's game for more.
 						""";;
 				break;
 			default:
-				text = "You Win!\n Click HERE to play next level";
+				text = "You Win!";
 				break;
 			}
+			text+="\n Click HERE to play next level";
 			// @formatter:on
 			// TODO play win music
 		} else {
