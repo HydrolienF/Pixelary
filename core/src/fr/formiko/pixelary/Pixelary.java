@@ -42,7 +42,6 @@ import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonRenderer;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-
 public class Pixelary extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private static List<PixmapActor> pixmapActors;
@@ -60,13 +59,14 @@ public class Pixelary extends ApplicationAdapter {
 	private int fontSize = 55;
 	private Color clearColor;
 	static int currentLevel;
-	private Assets assets;
+	public static Assets assets;
 	private static Vector2 aiTarget;
 	public static double scoreAI;
 	public static double scorePlayer;
 	public static Random random = new Random();
 	public static TextScreen textScreen;
 	private static Map<String, Sound> soundMap = new HashMap<String, Sound>();
+	private static Frenchzebutt frenchzebutt;
 
 
 	public Pixelary() {}
@@ -106,6 +106,8 @@ public class Pixelary extends ApplicationAdapter {
 			@Override
 			public void clicked(InputEvent event, float x, float y) { getPlayerPixmap().switchDisplayHelp(); }
 		});
+
+		createFrenchzebutt();
 
 		startNewLevel(1);
 
@@ -195,26 +197,39 @@ public class Pixelary extends ApplicationAdapter {
 
 	public void displayBeforeLevelText(int levelId) {
 		String text = "";
+		String skin = "normal";
+		int time = 0;
 		switch (levelId) {
 		case 1:
+			time = 19300;
 			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...";
 			break;
 		case 2:
-			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";;
+			time = 5537;
+			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";
 			break;
 		case 3:
+			time = 4180;
 			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
+			skin = "malicious";
 			break;
 		}
-		playSound("b" + levelId);
+		long soundId = playSound("b" + levelId);
+		frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		text += "\n[70%](Click anywere to start)[%]";
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) { startLevel(levelId); }
+			public void clicked(InputEvent event, float x, float y) {
+				startLevel(levelId);
+				stopSound("b" + levelId, soundId);
+			}
 		});
+		frenchzebutt.getSkeleton().setSkin(skin);
+		textScreen.addActor(frenchzebutt);
 		stage.addActor(textScreen);
 	}
+
 	private void startLevel(int levelId) {
 		switch (levelId) {
 		case 1:
@@ -300,6 +315,12 @@ public class Pixelary extends ApplicationAdapter {
 
 		if (textScreen != null) {
 			textScreen.setSize(w, h);
+		}
+
+		if (frenchzebutt != null) {
+			float racio = 1920f / w;
+			frenchzebutt.setScale(0.2f * racio, 0.2f * racio);
+			frenchzebutt.setPosition(racio * 250, 0);
 		}
 	}
 
@@ -421,6 +442,11 @@ public class Pixelary extends ApplicationAdapter {
 		}
 	}
 
+	public void createFrenchzebutt() {
+		frenchzebutt = new Frenchzebutt();
+		// stage.addActor(frenchzebutt);
+	}
+
 	public double diff(Pixmap pixmap1, Pixmap pixmap2) {
 		int diff = 0;
 		for (int i = 0; i < pixmap1.getWidth(); i++) {
@@ -452,33 +478,42 @@ public class Pixelary extends ApplicationAdapter {
 		Player.SPEED = 0;
 		Musics.stop();
 		String text;
+		final long soundId;
+		final int time;
 		if (win) {
 			switch (currentLevel) {
 			case 1:
+				time = 8460;
 				text = "Rrrrraaa ! How can it be ?!\n No one have ever beat Frenchzebutt !\nI won't play fair anymore ! I will use my secret weapon !";;
 				break;
 			case 2:
+				time = 9450;
 				text = "{SHRINK}I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !{ENDSHRINK}";
 				break;
 			case 3:
+				time = 11300;
 				text = "The cursed pineapple have choose,\nIt's time for me to give up.\n\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
 				break;
 			default:
+				time = 0;
 				text = "You Win!";
 				break;
 			}
 			text += "\n[70%](Click anywere to play next level)[%]";
 			// TODO play win music
-			playSound("a" + currentLevel);
+			soundId = playSound("a" + currentLevel);
+			frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		} else {
 			text = "You Lose!\n Click anywere to retry";
+			soundId = playSound("hahaha");
 			// TODO play lose music
-			// TODO play hahahaha
 		}
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				Musics.stop();
+				stopSound("a" + currentLevel, soundId);
 				if (win) {
 					startNewLevel(currentLevel + 1);
 				} else {
@@ -486,6 +521,9 @@ public class Pixelary extends ApplicationAdapter {
 				}
 			}
 		});
+		String skin = "malicious";
+		frenchzebutt.getSkeleton().setSkin(skin);
+		textScreen.addActor(frenchzebutt);
 
 		stage.addActor(textScreen);
 	}
@@ -562,11 +600,11 @@ public class Pixelary extends ApplicationAdapter {
 	 * @param volume   volume of the sound in [0, 1]
 	 * @param pan      left rigth ballance of the sound file in [-1, 1]
 	 */
-	public static void playSound(String fileName, float volume, float pan) {
+	public static long playSound(String fileName, float volume, float pan) {
 		if (soundMap.get(fileName) == null) {
 			soundMap.put(fileName, Gdx.audio.newSound(Gdx.files.internal("sounds/" + fileName + ".mp3")));
 		}
-		soundMap.get(fileName).play(volume, 1f, pan);
+		return soundMap.get(fileName).play(volume, 1f, pan);
 	}
 	/**
 	 * {@summary Play the given sound with default volume &#38; default pan.}
@@ -574,6 +612,13 @@ public class Pixelary extends ApplicationAdapter {
 	 * 
 	 * @param fileName name of the sound file
 	 */
-	public static void playSound(String fileName) { playSound(fileName, 1f, -0.2f); }
+	public static long playSound(String fileName) { return playSound(fileName, 1f, -0.2f); }
+
+	public static void stopSound(String fileName, long soundId) {
+		if (soundMap.get(fileName) == null) {
+			soundMap.put(fileName, Gdx.audio.newSound(Gdx.files.internal("sounds/" + fileName + ".mp3")));
+		}
+		soundMap.get(fileName).stop(soundId);
+	}
 }
 

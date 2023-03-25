@@ -1,0 +1,152 @@
+{
+"skeleton": {
+	"hash": "31Ju0ZA2cqc",
+	"spine": "4.1.19",
+	"x": -2486.9,
+	"y": -206.47,
+	"width": 4973.79,
+	"height": 4160,
+	"images": "../devil robot piece by piece/",
+	"audio": ""
+},
+"bones": [
+	{ "name": "root", "y": 1690.6 },
+	{ "name": "body", "parent": "root", "scaleX": 2, "scaleY": 2 },
+	{ "name": "head", "parent": "root", "y": 362.87 },
+	{ "name": "arm l", "parent": "body", "length": 622.8, "rotation": -135.8, "x": -173.11, "y": 109.82 },
+	{ "name": "leg r", "parent": "body", "length": 562.3, "rotation": -80.33, "x": 128.59, "y": -283.19 },
+	{ "name": "arm r", "parent": "body", "length": 622.8, "rotation": -43.2, "x": 173.11, "y": 109.82 },
+	{ "name": "leg l", "parent": "body", "length": 562.3, "rotation": -99, "x": -128.59, "y": -280.4 },
+	{
+		"name": "chin",
+		"parent": "head",
+		"length": 246.83,
+		"rotation": -90,
+		"y": -134.01,
+		"scaleX": 1.1,
+		"scaleY": 1.1
+	}
+],
+"slots": [
+	{ "name": "leg r", "bone": "leg r", "attachment": "leg" },
+	{ "name": "leg l", "bone": "leg l", "attachment": "leg" },
+	{ "name": "fingers l", "bone": "arm l", "attachment": "fingers" },
+	{ "name": "fingers r", "bone": "arm r", "attachment": "fingers" },
+	{ "name": "arm l", "bone": "arm l", "attachment": "arm" },
+	{ "name": "arm r", "bone": "arm r", "attachment": "arm" },
+	{ "name": "body", "bone": "body", "attachment": "body" },
+	{ "name": "head", "bone": "head", "attachment": "head" },
+	{ "name": "chin", "bone": "chin", "attachment": "chin" },
+	{ "name": "eyes", "bone": "head", "attachment": "eyes" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"arm l": {
+				"arm": { "x": -51.01, "y": -198.56, "rotation": 43.2, "width": 1600, "height": 1600 }
+			},
+			"arm r": {
+				"arm": { "x": -51.01, "y": -198.56, "rotation": 43.2, "width": 1600, "height": 1600 }
+			},
+			"body": {
+				"body": { "width": 1600, "height": 1600 }
+			},
+			"chin": {
+				"chin": { "x": -134.01, "rotation": 90, "width": 1200, "height": 1200 }
+			},
+			"fingers l": {
+				"fingers": { "x": -51.01, "y": -198.56, "rotation": 43.2, "width": 1600, "height": 1600 }
+			},
+			"fingers r": {
+				"fingers": { "x": -51.01, "y": -198.56, "rotation": 43.2, "width": 1600, "height": 1600 }
+			},
+			"head": {
+				"head": { "width": 1200, "height": 1200 }
+			},
+			"leg l": {
+				"leg": {
+					"x": -394.2,
+					"y": 111.75,
+					"scaleX": -1.5,
+					"scaleY": 1.3,
+					"rotation": 99,
+					"width": 1600,
+					"height": 1600
+				}
+			},
+			"leg r": {
+				"leg": {
+					"x": -398.24,
+					"y": -106.63,
+					"scaleX": 1.5,
+					"scaleY": 1.3,
+					"rotation": 80.33,
+					"width": 1600,
+					"height": 1600
+				}
+			}
+		}
+	},
+	{
+		"name": "malicious",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "malicious eyes", "width": 1200, "height": 1200 }
+			}
+		}
+	},
+	{
+		"name": "normal",
+		"attachments": {
+			"eyes": {
+				"eyes": { "width": 1200, "height": 1200 }
+			}
+		}
+	}
+],
+"animations": {
+	"default": {
+		"bones": {
+			"arm r": {
+				"rotate": [
+					{},
+					{ "time": 1, "value": -10 },
+					{ "time": 2 }
+				]
+			},
+			"arm l": {
+				"rotate": [
+					{},
+					{ "time": 1, "value": 10 },
+					{ "time": 2 }
+				]
+			},
+			"head": {
+				"translate": [
+					{},
+					{ "time": 1, "y": -16.58 },
+					{ "time": 2 }
+				]
+			}
+		}
+	},
+	"speak": {
+		"bones": {
+			"chin": {
+				"translate": [
+					{
+						"curve": [ 0.056, 0, 0.111, 0, 0.056, 0, 0.111, 73.35 ]
+					},
+					{
+						"time": 0.1667,
+						"y": 73.35,
+						"curve": [ 0.222, 0, 0.278, 0, 0.222, 73.35, 0.278, 0 ]
+					},
+					{ "time": 0.3333 }
+				]
+			}
+		}
+	}
+}
+}
