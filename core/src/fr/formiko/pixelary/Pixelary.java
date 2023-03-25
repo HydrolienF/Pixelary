@@ -65,7 +65,7 @@ public class Pixelary extends ApplicationAdapter {
 	private Color clearColor;
 	static int currentLevel;
 	public static Assets assets;
-	private static Vector2 aiTarget;
+	// private static Vector2 aiTarget;
 	public static double scoreAI;
 	public static double scorePlayer;
 	public static Random random = new Random();
@@ -165,7 +165,9 @@ public class Pixelary extends ApplicationAdapter {
 
 	}
 
-	public static void setSpot(Vector2 v) { aiTarget = v; }
+	public static void setSpot(Vector2 v) {
+		// aiTarget = v;
+	}
 
 	@Override
 	public void dispose() {
