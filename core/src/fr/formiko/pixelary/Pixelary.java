@@ -31,7 +31,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -56,6 +60,7 @@ public class Pixelary extends ApplicationAdapter {
 	private Viewport viewport;
 	private InputMultiplexer inputMultiplexer;
 	public static Label.LabelStyle labelStyle;
+	public static SelectBoxStyle selectBoxStyle;
 	private int fontSize = 55;
 	private Color clearColor;
 	static int currentLevel;
@@ -90,16 +95,35 @@ public class Pixelary extends ApplicationAdapter {
 		inputMultiplexer.addProcessor(stage);
 		inputMultiplexer.addProcessor(getInputProcessor());
 
-		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
-		pixmap.setColor(Color.WHITE);
-		pixmap.drawPixel(0, 0);
-		Texture texture = new Texture(pixmap);
-		pixmap.dispose();
-		TextureRegion region = new TextureRegion(texture, 0, 0, 1, 1);
-		shapeDrawer = new ShapeDrawer(batch, region);
+		{
+			Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+			pixmap.setColor(Color.WHITE);
+			pixmap.drawPixel(0, 0);
+			Texture texture = new Texture(pixmap);
+			pixmap.dispose();
+			TextureRegion region = new TextureRegion(texture, 0, 0, 1, 1);
+			shapeDrawer = new ShapeDrawer(batch, region);
+		}
 
 		BitmapFont bmf = new BitmapFont(Gdx.files.internal("fonts/dominican.fnt"));
 		labelStyle = new Label.LabelStyle(bmf, Color.BLACK);
+		selectBoxStyle = new SelectBoxStyle();
+		selectBoxStyle.font = bmf;
+		selectBoxStyle.fontColor = Color.BLACK;
+		selectBoxStyle.scrollStyle = new ScrollPaneStyle();
+
+		{
+			Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+			pixmap.setColor(new Color(1f, 148f / 255f, 0f, 1f));
+			pixmap.drawPixel(0, 0);
+			selectBoxStyle.listStyle = new ListStyle(bmf, Color.BLACK, Color.BLACK, new TextureRegionDrawable(new Texture(pixmap)));
+			pixmap.setColor(new Color(0.5f, 0.5f, 0.5f, 1f));
+			pixmap.drawPixel(0, 0);
+			selectBoxStyle.listStyle.background = new TextureRegionDrawable(new Texture(pixmap));
+			selectBoxStyle.background = new TextureRegionDrawable(new Texture(pixmap));
+			pixmap.dispose();
+		}
+
 
 		helpButton = new Image(new Texture(Gdx.files.internal("images/icons/basic/help.png")));
 		helpButton.addListener(new ClickListener() {
@@ -124,7 +148,7 @@ public class Pixelary extends ApplicationAdapter {
 		}
 		batch.end();
 
-		if (Player.SPEED > 0) {
+		if (Player.AI.SPEED > 0) {
 			updatePercent();
 		}
 
@@ -161,7 +185,7 @@ public class Pixelary extends ApplicationAdapter {
 		Player.AI.playOnModel = false;
 		Player.AI.actions = new LinkedList<Action>();
 
-		Player.SPEED = 0f;
+		Player.AI.SPEED = 0f;
 		switch (levelId) {
 		case 1:
 			clearColor = new Color(0.9f, 0.9f, 0.9f, 1);
@@ -217,10 +241,16 @@ public class Pixelary extends ApplicationAdapter {
 		long soundId = playSound("b" + levelId);
 		frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		text += "\n[70%](Click anywere to start)[%]";
-		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
+		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f), true);
 		textScreen.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (x >= textScreen.selectBox.getX() && x <= textScreen.selectBox.getX() + textScreen.selectBox.getWidth()
+						&& y >= textScreen.selectBox.getY() && y <= textScreen.selectBox.getY() + textScreen.selectBox.getHeight()) {
+					System.out.println("Over select box " + x + " " + y);
+					return;
+				}
+				System.out.println("NOT Over select box");
 				startLevel(levelId);
 				stopSound("b" + levelId, soundId);
 			}
@@ -233,15 +263,33 @@ public class Pixelary extends ApplicationAdapter {
 	private void startLevel(int levelId) {
 		switch (levelId) {
 		case 1:
-			Player.SPEED = 150;
+			Player.AI.SPEED = 150;
 			break;
 		case 2:
-			Player.SPEED = 300;
+			Player.AI.SPEED = 300;
 			break;
 		case 3:
-			Player.SPEED = 100;
+			Player.AI.SPEED = 100;
 			break;
 		}
+		switch (textScreen.selectBox.getSelected()) {
+		case "Insane":
+			Player.AI.difficultyModifier = 2f;
+			break;
+		case "Hard":
+			Player.AI.difficultyModifier = 1.5f;
+			break;
+		case "Normal":
+			Player.AI.difficultyModifier = 1;
+			break;
+		case "Easy":
+			Player.AI.difficultyModifier = 0.5f;
+			break;
+		case "Very easy":
+			Player.AI.difficultyModifier = 0.25f;
+			break;
+		}
+
 		textScreen.remove();
 
 		switch (levelId) {
@@ -318,7 +366,7 @@ public class Pixelary extends ApplicationAdapter {
 		}
 
 		if (frenchzebutt != null) {
-			float racio = 1920f / w;
+			float racio = w / 1920f;
 			frenchzebutt.setScale(0.2f * racio, 0.2f * racio);
 			frenchzebutt.setPosition(racio * 250, 0);
 		}
@@ -475,7 +523,7 @@ public class Pixelary extends ApplicationAdapter {
 	}
 
 	public void endGame(final boolean win) {
-		Player.SPEED = 0;
+		Player.AI.SPEED = 0;
 		Musics.stop();
 		String text;
 		final long soundId;
@@ -508,7 +556,7 @@ public class Pixelary extends ApplicationAdapter {
 			soundId = playSound("hahaha");
 			// TODO play lose music
 		}
-		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
+		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f), false);
 		textScreen.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
