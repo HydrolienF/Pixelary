@@ -478,12 +478,12 @@ public class Pixelary extends ApplicationAdapter {
 			text = "You Lose!\n Click anywere to retry";
 			soundId = playSound("hahaha");
 			// TODO play lose music
-			// TODO play hahahaha
 		}
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				Musics.stop();
 				stopSound("a" + currentLevel, soundId);
 				if (win) {
 					startNewLevel(currentLevel + 1);
