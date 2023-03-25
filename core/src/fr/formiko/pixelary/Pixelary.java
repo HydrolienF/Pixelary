@@ -59,7 +59,7 @@ public class Pixelary extends ApplicationAdapter {
 	private int fontSize = 55;
 	private Color clearColor;
 	static int currentLevel;
-	private Assets assets;
+	public static Assets assets;
 	private static Vector2 aiTarget;
 	public static double scoreAI;
 	public static double scorePlayer;
@@ -198,19 +198,24 @@ public class Pixelary extends ApplicationAdapter {
 	public void displayBeforeLevelText(int levelId) {
 		String text = "";
 		String skin = "normal";
+		int time = 0;
 		switch (levelId) {
 		case 1:
+			time = 19300;
 			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...";
 			break;
 		case 2:
+			time = 5537;
 			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";
 			break;
 		case 3:
+			time = 4180;
 			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
 			skin = "malicious";
 			break;
 		}
 		long soundId = playSound("b" + levelId);
+		frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		text += "\n[70%](Click anywere to start)[%]";
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
@@ -223,8 +228,8 @@ public class Pixelary extends ApplicationAdapter {
 		frenchzebutt.getSkeleton().setSkin(skin);
 		textScreen.addActor(frenchzebutt);
 		stage.addActor(textScreen);
-
 	}
+
 	private void startLevel(int levelId) {
 		switch (levelId) {
 		case 1:
@@ -438,22 +443,7 @@ public class Pixelary extends ApplicationAdapter {
 	}
 
 	public void createFrenchzebutt() {
-		SkeletonRenderer skeletonRenderer = new SkeletonRenderer();
-		skeletonRenderer.setPremultipliedAlpha(true);
-		String textureName = "Frenchzebutt";
-
-		Skeleton skeleton = new Skeleton(assets.getSkeletonData(textureName));
-		AnimationStateData stateData = new AnimationStateData(assets.getSkeletonData(textureName));
-		AnimationState animationState = new AnimationState(stateData);
-
-		animationState.addAnimation(1, "default", true, 0);
-		animationState.addAnimation(0, "speak", true, 0); // TODO stop when audio stop
-
 		frenchzebutt = new Frenchzebutt();
-		frenchzebutt.setRenderer(skeletonRenderer);
-		frenchzebutt.setSkeleton(skeleton);
-		frenchzebutt.setAnimationState(animationState);
-
 		// stage.addActor(frenchzebutt);
 	}
 
@@ -489,24 +479,30 @@ public class Pixelary extends ApplicationAdapter {
 		Musics.stop();
 		String text;
 		final long soundId;
+		final int time;
 		if (win) {
 			switch (currentLevel) {
 			case 1:
+				time = 8460;
 				text = "Rrrrraaa ! How can it be ?!\n No one have ever beat Frenchzebutt !\nI won't play fair anymore ! I will use my secret weapon !";;
 				break;
 			case 2:
+				time = 9450;
 				text = "{SHRINK}I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !{ENDSHRINK}";
 				break;
 			case 3:
+				time = 11300;
 				text = "The cursed pineapple have choose,\nIt's time for me to give up.\n\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
 				break;
 			default:
+				time = 0;
 				text = "You Win!";
 				break;
 			}
 			text += "\n[70%](Click anywere to play next level)[%]";
 			// TODO play win music
 			soundId = playSound("a" + currentLevel);
+			frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		} else {
 			text = "You Lose!\n Click anywere to retry";
 			soundId = playSound("hahaha");

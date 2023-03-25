@@ -1,6 +1,6 @@
 {
 "skeleton": {
-	"hash": "lEsxtq0wtLo",
+	"hash": "31Ju0ZA2cqc",
 	"spine": "4.1.19",
 	"x": -2486.9,
 	"y": -206.47,
@@ -17,7 +17,15 @@
 	{ "name": "leg r", "parent": "body", "length": 562.3, "rotation": -80.33, "x": 128.59, "y": -283.19 },
 	{ "name": "arm r", "parent": "body", "length": 622.8, "rotation": -43.2, "x": 173.11, "y": 109.82 },
 	{ "name": "leg l", "parent": "body", "length": 562.3, "rotation": -99, "x": -128.59, "y": -280.4 },
-	{ "name": "chin", "parent": "head", "length": 246.83, "rotation": -90, "y": -134.01 }
+	{
+		"name": "chin",
+		"parent": "head",
+		"length": 246.83,
+		"rotation": -90,
+		"y": -134.01,
+		"scaleX": 1.1,
+		"scaleY": 1.1
+	}
 ],
 "slots": [
 	{ "name": "leg r", "bone": "leg r", "attachment": "leg" },
@@ -117,7 +125,7 @@
 			"head": {
 				"translate": [
 					{},
-					{ "time": 1, "y": -45.85 },
+					{ "time": 1, "y": -16.58 },
 					{ "time": 2 }
 				]
 			}
@@ -128,12 +136,12 @@
 			"chin": {
 				"translate": [
 					{
-						"curve": [ 0.056, 0, 0.111, 0, 0.056, 0, 0.111, 53.9 ]
+						"curve": [ 0.056, 0, 0.111, 0, 0.056, 0, 0.111, 73.35 ]
 					},
 					{
 						"time": 0.1667,
-						"y": 53.9,
-						"curve": [ 0.222, 0, 0.278, 0, 0.222, 53.9, 0.278, 0 ]
+						"y": 73.35,
+						"curve": [ 0.222, 0, 0.278, 0, 0.222, 73.35, 0.278, 0 ]
 					},
 					{ "time": 0.3333 }
 				]
