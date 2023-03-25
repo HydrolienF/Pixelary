@@ -228,15 +228,15 @@ public class Pixelary extends ApplicationAdapter {
 		switch (levelId) {
 		case 1:
 			time = 19300;
-			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...";
+			text = "{SPEED=0.5}Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.{SPEED}{SPEED=0.2}\n\nAim {SPEED}{SPEED=0.47}is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...{SPEED}";
 			break;
 		case 2:
 			time = 5537;
-			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";
+			text = "{SPEED=0.5}Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.{SPEED}";
 			break;
 		case 3:
 			time = 4180;
-			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
+			text = "{SPEED=0.5}LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !{SPEED}";
 			skin = "malicious";
 			break;
 		}
@@ -530,26 +530,31 @@ public class Pixelary extends ApplicationAdapter {
 		String text;
 		final long soundId;
 		final int time;
+		String skin = "malicious";
+
 		if (win) {
 			switch (currentLevel) {
 			case 1:
 				time = 8460;
-				text = "Rrrrraaa ! How can it be ?!\n No one have ever beat Frenchzebutt !\nI won't play fair anymore ! I will use my secret weapon !";;
+				text = "{SPEED=0.5}Rrrrraaa ! How can it be ?!\n No one have ever beat Frenchzebutt !\nI won't play fair anymore ! I will use my secret weapon !{SPEED}";
 				break;
 			case 2:
 				time = 9450;
-				text = "{SHRINK}I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !{ENDSHRINK}";
+				text = "{SPEED=0.4}{SHRINK}I'M FRENCHZEBUTT SON OF BEELZEBIT & FRENCHZEBETTE, BROTHER OF BEELZEBOT !\nNO ONE HAVE EVER SURVIVE AFTER BRAVE ME !{ENDSHRINK}{SPEED}";
 				break;
 			case 3:
 				time = 11300;
-				text = "The cursed pineapple have choose,\nIt's time for me to give up.\n\nBut I will be back in next libgdx jam !\nCheck hydrolien's game for more.";;
+				text = "{SPEED=0.5}The cursed pineapple has choose,\nIt's time for me to give up.\n\n{SPEED}{SPEED=0.1}But{SPEED}{SPEED=0.35} I will be back in next libgdx jam !\nCheck hydrolien's game for more.{SPEED}";
+				skin = "normal";
 				break;
 			default:
 				time = 0;
 				text = "You Win!";
 				break;
 			}
-			text += "\n[70%](Click anywere to play next level)[%]";
+			if (currentLevel < 3) {
+				text += "\n[70%](Click anywere to play next level)[%]";
+			}
 			// TODO play win music
 			soundId = playSound("a" + currentLevel);
 			frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
@@ -559,19 +564,20 @@ public class Pixelary extends ApplicationAdapter {
 			// TODO play lose music
 		}
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f), false);
-		textScreen.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Musics.stop();
-				stopSound("a" + currentLevel, soundId);
-				if (win) {
-					startNewLevel(currentLevel + 1);
-				} else {
-					startNewLevel(currentLevel);
+		if (currentLevel < 3) {
+			textScreen.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					Musics.stop();
+					stopSound("a" + currentLevel, soundId);
+					if (win) {
+						startNewLevel(currentLevel + 1);
+					} else {
+						startNewLevel(currentLevel);
+					}
 				}
-			}
-		});
-		String skin = "malicious";
+			});
+		}
 		frenchzebutt.getSkeleton().setSkin(skin);
 		textScreen.addActor(frenchzebutt);
 
