@@ -1,6 +1,6 @@
 {
 "skeleton": {
-	"hash": "31Ju0ZA2cqc",
+	"hash": "sUI2FnE1d3w",
 	"spine": "4.1.19",
 	"x": -2486.9,
 	"y": -206.47,
@@ -101,6 +101,14 @@
 		"attachments": {
 			"eyes": {
 				"eyes": { "width": 1200, "height": 1200 }
+			}
+		}
+	},
+	{
+		"name": "sad",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "sad eyes", "width": 1200, "height": 1200 }
 			}
 		}
 	}
