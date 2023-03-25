@@ -539,7 +539,7 @@ public class Pixelary extends ApplicationAdapter {
 				break;
 			case 3:
 				time = 11300;
-				text = "{SPEED=0.5}The cursed pineapple has choose,\nIt's time for me to give up.\n\n{SPEED}{SPEED=0.1}But{SPEED}{SPEED=0.35} I will be back in next libgdx jam !\nCheck hydrolien's game for more.{SPEED}";
+				text = "{SPEED=0.5}The cursed pineapple has choosen.\nIt's time for me to give up.\n\n{SPEED}{SPEED=0.1}But{SPEED}{SPEED=0.35} I will be back in next libgdx jam !\nCheck hydrolien's game for more.{SPEED}";
 				skin = "sad";
 				break;
 			default:
