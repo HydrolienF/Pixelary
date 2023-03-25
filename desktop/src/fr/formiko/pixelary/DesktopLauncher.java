@@ -27,6 +27,7 @@ public class DesktopLauncher {
 		config.setTitle("Pixelary");
 		// config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		config.setMaximized(true);
+		config.setWindowIcon("images/icon.png");
 		// config.setResizable(false);
 		Pixelary pixelary = new Pixelary();
 		new Lwjgl3Application(pixelary, config);
