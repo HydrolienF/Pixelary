@@ -13,10 +13,11 @@ public class Player {
     public static Player AI = new Player();
     public static Player HUMAN = new Player();
     // public int id; // 0 is the player, 1 is the IA.
-    public static float SPEED = 200;
+    public float SPEED = 200;
     public Vector2 nextClickPosition;
     public List<Action> actions;
     public boolean playOnModel;
+    public float difficultyModifier = 1f;
 
 
     // Constructors ---------------------------------------------------------------------------------------------------
@@ -34,7 +35,7 @@ public class Player {
         this.pen = pen;
         pen.player = this;
     }
-    public float getSpeed(float delta) { return SPEED * delta * Gdx.graphics.getWidth() / 1920; }
+    public float getSpeed(float delta) { return SPEED * difficultyModifier * delta * Gdx.graphics.getWidth() / 1920; }
     public boolean isPlayOnModel() { return playOnModel; }
     public void setPlayOnModel(boolean playOnModel) {
         this.playOnModel = playOnModel;
