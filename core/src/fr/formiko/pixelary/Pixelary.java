@@ -4,11 +4,9 @@ import fr.formiko.pixelary.tools.Assets;
 import fr.formiko.pixelary.tools.Musics;
 import fr.formiko.pixelary.tools.Shapes;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -16,7 +14,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -70,7 +67,6 @@ public class Pixelary extends ApplicationAdapter {
 	public static double scorePlayer;
 	public static Random random = new Random();
 	public static TextScreen textScreen;
-	private static Map<String, Sound> soundMap = new HashMap<String, Sound>();
 	private static Frenchzebutt frenchzebutt;
 
 
@@ -240,7 +236,7 @@ public class Pixelary extends ApplicationAdapter {
 			skin = "malicious";
 			break;
 		}
-		long soundId = playSound("b" + levelId);
+		playSound("b" + levelId);
 		frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		text += "\n[70%](Click anywere to start)[%]";
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f), true);
@@ -254,7 +250,7 @@ public class Pixelary extends ApplicationAdapter {
 				}
 				System.out.println("NOT Over select box");
 				startLevel(levelId);
-				stopSound("b" + levelId, soundId);
+				stopSound();
 			}
 		});
 		frenchzebutt.getSkeleton().setSkin(skin);
@@ -528,7 +524,6 @@ public class Pixelary extends ApplicationAdapter {
 		Player.AI.SPEED = 0;
 		Musics.stop();
 		String text;
-		final long soundId;
 		final int time;
 		String skin = "malicious";
 
@@ -556,11 +551,11 @@ public class Pixelary extends ApplicationAdapter {
 				text += "\n[70%](Click anywere to play next level)[%]";
 			}
 			// TODO play win music
-			soundId = playSound("a" + currentLevel);
+			playSound("a" + currentLevel);
 			frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		} else {
 			text = "You Lose!\n Click anywere to retry";
-			soundId = playSound("hahaha");
+			playSound("hahaha");
 			// TODO play lose music
 		}
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f), false);
@@ -569,7 +564,7 @@ public class Pixelary extends ApplicationAdapter {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					Musics.stop();
-					stopSound("a" + currentLevel, soundId);
+					stopSound();
 					if (win) {
 						startNewLevel(currentLevel + 1);
 					} else {
@@ -648,33 +643,8 @@ public class Pixelary extends ApplicationAdapter {
 		return inputProcessor;
 	}
 
-	/**
-	 * {@summary Play the given sound.}
-	 * Sound can be play many times &#38; at same time.
-	 * 
-	 * @param fileName name of the sound file
-	 * @param volume   volume of the sound in [0, 1]
-	 * @param pan      left rigth ballance of the sound file in [-1, 1]
-	 */
-	public static long playSound(String fileName, float volume, float pan) {
-		if (soundMap.get(fileName) == null) {
-			soundMap.put(fileName, Gdx.audio.newSound(Gdx.files.internal("sounds/" + fileName + ".mp3")));
-		}
-		return soundMap.get(fileName).play(volume, 1f, pan);
-	}
-	/**
-	 * {@summary Play the given sound with default volume &#38; default pan.}
-	 * Sound can be play many times &#38; at same time.
-	 * 
-	 * @param fileName name of the sound file
-	 */
-	public static long playSound(String fileName) { return playSound(fileName, 1f, -0.2f); }
+	public static void playSound(String fileName) { Musics.playDialog(fileName); }
 
-	public static void stopSound(String fileName, long soundId) {
-		if (soundMap.get(fileName) == null) {
-			soundMap.put(fileName, Gdx.audio.newSound(Gdx.files.internal("sounds/" + fileName + ".mp3")));
-		}
-		soundMap.get(fileName).stop(soundId);
-	}
+	public static void stopSound() { Musics.stopDialog(); }
 }
 

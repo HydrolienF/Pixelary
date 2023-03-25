@@ -15,6 +15,7 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class Musics {
     private static Music music;
+    private static Music dialog;
     private static float musicsVolume = 1f;
 
     public static float getMusicsVolume() { return musicsVolume; }
@@ -45,7 +46,6 @@ public class Musics {
     public static void play() {
         stop();
         if (music != null) {
-            System.out.println("Play current music");
             music.play();
         }
     }
@@ -119,5 +119,41 @@ public class Musics {
         play("lvl" + levelId);
         setVolume(0.4f);
         setLooping(true);
+    }
+
+    public static void setMusicDialog(String fileName) {
+        System.out.println("Set dialog to " + fileName);
+        stopDialog();
+        FileHandle file = Gdx.files.internal("sounds/" + fileName + ".mp3");
+        if (file.exists()) {
+            dialog = Gdx.audio.newMusic(file);
+            dialog.setVolume(musicsVolume);
+            System.out.println("Current dialog : " + fileName);
+        } else {
+            dialog = null;
+            System.out.println("dialog file not found : " + fileName);
+        }
+    }
+    /**
+     * Stop the current dialog.
+     */
+    public static void stopDialog() {
+        if (dialog != null) {
+            dialog.stop();
+        }
+    }
+    /**
+     * Play the current dialog.
+     */
+    public static void playDialog() {
+        stopDialog();
+        if (dialog != null) {
+            dialog.play();
+        }
+    }
+
+    public static void playDialog(String fileName) {
+        setMusicDialog(fileName);
+        playDialog();
     }
 }
