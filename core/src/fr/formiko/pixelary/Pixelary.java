@@ -206,12 +206,15 @@ public class Pixelary extends ApplicationAdapter {
 			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
 			break;
 		}
-		playSound("b" + levelId);
+		long soundId = playSound("b" + levelId);
 		text += "\n[70%](Click anywere to start)[%]";
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f));
 		textScreen.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) { startLevel(levelId); }
+			public void clicked(InputEvent event, float x, float y) {
+				startLevel(levelId);
+				stopSound("b" + levelId, soundId);
+			}
 		});
 		stage.addActor(textScreen);
 	}
@@ -452,6 +455,7 @@ public class Pixelary extends ApplicationAdapter {
 		Player.SPEED = 0;
 		Musics.stop();
 		String text;
+		final long soundId;
 		if (win) {
 			switch (currentLevel) {
 			case 1:
@@ -469,9 +473,10 @@ public class Pixelary extends ApplicationAdapter {
 			}
 			text += "\n[70%](Click anywere to play next level)[%]";
 			// TODO play win music
-			playSound("a" + currentLevel);
+			soundId = playSound("a" + currentLevel);
 		} else {
 			text = "You Lose!\n Click anywere to retry";
+			soundId = playSound("hahaha");
 			// TODO play lose music
 			// TODO play hahahaha
 		}
@@ -479,6 +484,7 @@ public class Pixelary extends ApplicationAdapter {
 		textScreen.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				stopSound("a" + currentLevel, soundId);
 				if (win) {
 					startNewLevel(currentLevel + 1);
 				} else {
@@ -562,11 +568,11 @@ public class Pixelary extends ApplicationAdapter {
 	 * @param volume   volume of the sound in [0, 1]
 	 * @param pan      left rigth ballance of the sound file in [-1, 1]
 	 */
-	public static void playSound(String fileName, float volume, float pan) {
+	public static long playSound(String fileName, float volume, float pan) {
 		if (soundMap.get(fileName) == null) {
 			soundMap.put(fileName, Gdx.audio.newSound(Gdx.files.internal("sounds/" + fileName + ".mp3")));
 		}
-		soundMap.get(fileName).play(volume, 1f, pan);
+		return soundMap.get(fileName).play(volume, 1f, pan);
 	}
 	/**
 	 * {@summary Play the given sound with default volume &#38; default pan.}
@@ -574,6 +580,13 @@ public class Pixelary extends ApplicationAdapter {
 	 * 
 	 * @param fileName name of the sound file
 	 */
-	public static void playSound(String fileName) { playSound(fileName, 1f, -0.2f); }
+	public static long playSound(String fileName) { return playSound(fileName, 1f, -0.2f); }
+
+	public static void stopSound(String fileName, long soundId) {
+		if (soundMap.get(fileName) == null) {
+			soundMap.put(fileName, Gdx.audio.newSound(Gdx.files.internal("sounds/" + fileName + ".mp3")));
+		}
+		soundMap.get(fileName).stop(soundId);
+	}
 }
 
