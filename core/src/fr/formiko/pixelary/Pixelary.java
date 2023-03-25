@@ -42,7 +42,6 @@ import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonRenderer;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-
 public class Pixelary extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private static List<PixmapActor> pixmapActors;
@@ -67,6 +66,7 @@ public class Pixelary extends ApplicationAdapter {
 	public static Random random = new Random();
 	public static TextScreen textScreen;
 	private static Map<String, Sound> soundMap = new HashMap<String, Sound>();
+	private static Frenchzebutt frenchzebutt;
 
 
 	public Pixelary() {}
@@ -106,6 +106,8 @@ public class Pixelary extends ApplicationAdapter {
 			@Override
 			public void clicked(InputEvent event, float x, float y) { getPlayerPixmap().switchDisplayHelp(); }
 		});
+
+		createFrenchzebutt();
 
 		startNewLevel(1);
 
@@ -195,15 +197,17 @@ public class Pixelary extends ApplicationAdapter {
 
 	public void displayBeforeLevelText(int levelId) {
 		String text = "";
+		String skin = "normal";
 		switch (levelId) {
 		case 1:
 			text = "Welcome player, I'm Frenchzebutt, your friend to play Pixelary !\nDéjà vue fealing ? Many people think I'm my twin Beelzebot.\n\nAim is to reproduce the model as fast as possible ! The first one to do it wins !\nBut there is no way you will win it, anyway...";
 			break;
 		case 2:
-			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";;
+			text = "Now were competing for gold !\nDéjà vue fealing ? It's from my favorite game.";
 			break;
 		case 3:
 			text = "LET'S THE CURSED PINEAPPLE DETERMINE THE WINNER !";
+			skin = "malicious";
 			break;
 		}
 		long soundId = playSound("b" + levelId);
@@ -216,7 +220,10 @@ public class Pixelary extends ApplicationAdapter {
 				stopSound("b" + levelId, soundId);
 			}
 		});
+		frenchzebutt.getSkeleton().setSkin(skin);
+		textScreen.addActor(frenchzebutt);
 		stage.addActor(textScreen);
+
 	}
 	private void startLevel(int levelId) {
 		switch (levelId) {
@@ -303,6 +310,12 @@ public class Pixelary extends ApplicationAdapter {
 
 		if (textScreen != null) {
 			textScreen.setSize(w, h);
+		}
+
+		if (frenchzebutt != null) {
+			float racio = 1920f / w;
+			frenchzebutt.setScale(0.2f * racio, 0.2f * racio);
+			frenchzebutt.setPosition(racio * 250, 0);
 		}
 	}
 
@@ -424,6 +437,26 @@ public class Pixelary extends ApplicationAdapter {
 		}
 	}
 
+	public void createFrenchzebutt() {
+		SkeletonRenderer skeletonRenderer = new SkeletonRenderer();
+		skeletonRenderer.setPremultipliedAlpha(true);
+		String textureName = "Frenchzebutt";
+
+		Skeleton skeleton = new Skeleton(assets.getSkeletonData(textureName));
+		AnimationStateData stateData = new AnimationStateData(assets.getSkeletonData(textureName));
+		AnimationState animationState = new AnimationState(stateData);
+
+		animationState.addAnimation(1, "default", true, 0);
+		animationState.addAnimation(0, "speak", true, 0); // TODO stop when audio stop
+
+		frenchzebutt = new Frenchzebutt();
+		frenchzebutt.setRenderer(skeletonRenderer);
+		frenchzebutt.setSkeleton(skeleton);
+		frenchzebutt.setAnimationState(animationState);
+
+		// stage.addActor(frenchzebutt);
+	}
+
 	public double diff(Pixmap pixmap1, Pixmap pixmap2) {
 		int diff = 0;
 		for (int i = 0; i < pixmap1.getWidth(); i++) {
@@ -492,6 +525,9 @@ public class Pixelary extends ApplicationAdapter {
 				}
 			}
 		});
+		String skin = "malicious";
+		frenchzebutt.getSkeleton().setSkin(skin);
+		textScreen.addActor(frenchzebutt);
 
 		stage.addActor(textScreen);
 	}
