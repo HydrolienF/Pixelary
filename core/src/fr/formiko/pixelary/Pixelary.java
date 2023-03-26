@@ -615,7 +615,7 @@ public class Pixelary extends ApplicationAdapter {
 			 */
 			@Override
 			public boolean keyUp(int keycode) {
-				if (keycode == Input.Keys.W) {
+				if (keycode == Input.Keys.M) {
 					endGame(true);
 				}
 				return true;
