@@ -69,8 +69,15 @@ public class Player {
                     nextClickPosition = null;
                     return;
                 } else {
+                    double maxDistanceToMove = java.lang.Math.abs(fr.formiko.pixelary.tools.Math
+                            .getDistanceBetweenPoints(nextClickPosition.x, nextClickPosition.y, pen.getX(), pen.getY()));
+                    float distance = getSpeed(delta);
+                    if (distance > maxDistanceToMove) {
+                        distance = (float) maxDistanceToMove;
+                        // System.out.println("Lower distance to move to " + distance + " because it was too high.");
+                    }
                     Vector2 v2 = new Vector2(nextClickPosition.x - pen.getX(), nextClickPosition.y - pen.getY());
-                    pen.moveFront(getSpeed(delta), v2);
+                    pen.moveFront(distance, v2);
                 }
             }
         } catch (Exception e) {
