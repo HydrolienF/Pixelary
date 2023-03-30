@@ -550,13 +550,11 @@ public class Pixelary extends ApplicationAdapter {
 			if (currentLevel < 3) {
 				text += "\n[70%](Click anywere to play next level)[%]";
 			}
-			// TODO play win music
 			playSound("a" + currentLevel);
 			frenchzebutt.setStopSpeakingTime(System.currentTimeMillis() + time);
 		} else {
 			text = "You Lose!\n [70%](Click anywere to retry)[%]";
 			playSound("hahaha");
-			// TODO play lose music
 		}
 		textScreen = new TextScreen(text, new Color(1, 1, 1, 0.9f), false);
 		textScreen.addListener(new ClickListener() {
